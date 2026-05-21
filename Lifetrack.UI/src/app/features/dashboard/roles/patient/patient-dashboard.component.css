@@ -1,29 +1,417 @@
-/* .patient-banner, .profile-grid-2, .profile-item, .profile-label, .profile-value
-   are all defined in global styles.css */
+/* ══════════════════════════════════════════════════════════════════════
+   PATIENT DASHBOARD — clinical web-portal redesign
+   No duplicate user avatar (topnav already shows it).
+   Two-column responsive layout instead of mobile card stack.
+   ══════════════════════════════════════════════════════════════════════ */
 
-/* ── No-record alert ─────────────────────────────────────────────────────── */
-.alert-info {
+.pat-dash {
+  padding: 28px 32px 40px;
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+/* ── Page header (clean title row, NO avatar/navbar feel) ────────────── */
+.pat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 20px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid #e5e7eb;
+  flex-wrap: wrap;
+}
+.pat-header-left { min-width: 0; }
+.pat-greeting {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  color: #0f172a;
+  letter-spacing: -0.01em;
+}
+.pat-sub {
+  margin: 3px 0 0;
+  font-size: 13px;
+  color: #64748b;
+}
+
+/* Header stats — inline counters instead of a navbar */
+.pat-header-stats {
+  display: flex;
+  gap: 28px;
+  align-items: center;
+}
+.pat-stat {
+  text-align: center;
+  line-height: 1.2;
+}
+.pat-stat-value {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  color: #0f172a;
+}
+.pat-stat-value.pat-stat-warn { color: #d97706; }
+.pat-stat-label {
+  margin: 2px 0 0;
+  font-size: 11px;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 500;
+}
+
+/* ── Warning card (no patient record) ─────────────────────────────────── */
+.pat-warn-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px 20px;
+  background: #FCEBEB;
+  border: 1px solid #fecaca;
+  border-radius: 12px;
+  margin-bottom: 24px;
+}
+.pat-warn-title { margin: 0; font-size: 14px; font-weight: 600; color: #791F1F; }
+.pat-warn-sub   { margin: 4px 0 0; font-size: 13px; color: #A32D2D; }
+
+/* ══════════════════════════════════════════════════════════════════════
+   HERO ROW — Next visit (left) + Daily check-in / Report (right)
+   ══════════════════════════════════════════════════════════════════════ */
+.pat-hero {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.pat-hero-right {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ── Card base ─────────────────────────────────────────────────────────── */
+.pat-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 20px 22px;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, .04);
+}
+
+/* Hero "Next visit" card — slightly accented background */
+.pat-card-hero {
+  background: linear-gradient(135deg, #f0f9ff 0%, #ffffff 60%);
+  border-color: #bae6fd;
+}
+
+.pat-card-hdr {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  gap: 8px;
+}
+.pat-card-eyebrow {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+  color: #0369a1;
+}
+.pat-card-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #0f172a;
+  margin: 0;
+}
+.pat-card-badge {
+  font-size: 11px;
+  padding: 3px 9px;
+  background: #f1f5f9;
+  color: #475569;
+  border-radius: 6px;
+  font-weight: 500;
+}
+.pat-card-badge-blue { background: #dbeafe; color: #1e40af; }
+
+/* Hero date / time / meta */
+.pat-hero-date {
+  margin: 4px 0 0;
+  font-size: 28px;
+  font-weight: 700;
+  color: #0c4a6e;
+  letter-spacing: -0.02em;
+}
+.pat-hero-time {
+  margin: 2px 0 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #0369a1;
+}
+.pat-hero-meta {
+  margin: 6px 0 16px;
+  font-size: 13px;
+  color: #475569;
+}
+.pat-hero-empty {
+  margin: 6px 0 4px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #64748b;
+}
+.pat-skeleton { color: #9ca3af; font-weight: 500; }
+
+/* Hero buttons */
+.pat-row-btns { display: flex; gap: 8px; }
+.pat-btn-outline {
+  flex: 1;
+  padding: 9px;
+  background: #fff;
+  border: 1px solid #bae6fd;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #0c4a6e;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all .15s;
+}
+.pat-btn-outline:hover {
+  background: #f0f9ff;
+  border-color: #7dd3fc;
+}
+
+/* ── Action cards (Daily check-in, Report symptom) ────────────────────── */
+.pat-action-card {
   display: flex;
   align-items: center;
   gap: 12px;
-  background: #eff6ff;
-  border: 1px solid #bfdbfe;
-  border-left: 4px solid #3b82f6;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid;
+  flex: 1;
+}
+.pat-action-green {
+  background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+  border-color: #a7f3d0;
+  color: #065f46;
+}
+.pat-action-red {
+  background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+  border-color: #fecaca;
+  color: #991b1b;
+}
+.pat-action-icon {
+  width: 40px; height: 40px;
+  background: rgba(255, 255, 255, .5);
   border-radius: 10px;
-  padding: 14px 18px;
-  font-size: 13.5px;
-  color: #1d4ed8;
-  margin-bottom: 24px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  color: inherit;
 }
-
-/* ── Full-width panel (Adverse Events row) ───────────────────────────────── */
-.panel-full-row {
-  margin-bottom: 24px;
-}
-
-/* ── mono value ──────────────────────────────────────────────────────────── */
-.profile-value.mono {
-  font-family: 'Courier New', monospace;
-  color: #475569;
+.pat-action-body { flex: 1; min-width: 0; }
+.pat-action-title {
+  margin: 0;
   font-size: 13px;
+  font-weight: 600;
+  color: inherit;
+}
+.pat-action-sub {
+  margin: 1px 0 0;
+  font-size: 11px;
+  opacity: .8;
+}
+.pat-action-btn {
+  padding: 7px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  background: #fff;
+  border: 1px solid currentColor;
+  border-radius: 7px;
+  color: inherit;
+  cursor: pointer;
+  transition: all .15s;
+}
+.pat-action-btn:hover {
+  background: currentColor;
+  color: #fff;
+}
+.pat-action-green .pat-action-btn:hover { color: #065f46; background: #ecfdf5; }
+.pat-action-red   .pat-action-btn:hover { color: #991b1b; background: #fef2f2; }
+
+/* ══════════════════════════════════════════════════════════════════════
+   MAIN GRID — 2-column on desktop, stacks on mobile
+   ══════════════════════════════════════════════════════════════════════ */
+.pat-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.pat-col {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ── Generic list item (used by trials and AEs) ───────────────────────── */
+.pat-list-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+.pat-list-item.pat-no-border,
+.pat-visit-item.pat-no-border,
+.pat-msg-item.pat-no-border { border-bottom: none; }
+
+.pat-list-icon {
+  width: 32px; height: 32px;
+  border-radius: 10px;
+  background: #f3f4f6;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.pat-list-icon-green { background: #d1fae5; }
+.pat-list-icon-red   { background: #fee2e2; }
+
+.pat-list-body { flex: 1; min-width: 0; }
+.pat-list-title {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #0f172a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.pat-list-meta {
+  margin: 2px 0 0;
+  font-size: 11px;
+  color: #64748b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── Visit row: date block on the left ─────────────────────────────────── */
+.pat-visit-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+.pat-visit-date {
+  width: 44px; height: 44px;
+  border-radius: 10px;
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
+  color: #0369a1;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  flex-shrink: 0;
+  line-height: 1.1;
+}
+.pat-visit-day { font-size: 16px; font-weight: 700; }
+.pat-visit-mon { font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+
+/* ── Message row: circular initials ───────────────────────────────────── */
+.pat-msg-item {
+  display: flex;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+.pat-msg-avatar {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ede9fe, #ddd6fe);
+  color: #5b21b6;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+
+/* ── Pills (uses global .badge-* palette) ─────────────────────────────── */
+.pat-pill {
+  font-size: 11px;
+  padding: 3px 9px;
+  border-radius: 6px;
+  font-weight: 500;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ── Loading / Empty states ───────────────────────────────────────────── */
+.pat-loading {
+  display: flex; align-items: center; gap: 8px;
+  padding: 16px 0;
+  color: #94a3b8;
+  font-size: 13px;
+}
+.pat-spinner {
+  width: 16px; height: 16px;
+  border: 2px solid #e5e7eb;
+  border-top-color: #0369a1;
+  border-radius: 50%;
+  animation: pat-spin .7s linear infinite;
+  flex-shrink: 0;
+}
+@keyframes pat-spin { to { transform: rotate(360deg); } }
+.pat-empty {
+  padding: 18px 0;
+  font-size: 13px;
+  color: #94a3b8;
+  text-align: center;
+}
+
+/* ── Info card (trial coordinator block) ──────────────────────────────── */
+.pat-info-card {
+  background: linear-gradient(135deg, #f8fafc 0%, #fff 60%);
+}
+.pat-card-info {
+  margin: 0 0 8px;
+  font-size: 13px;
+  color: #475569;
+  line-height: 1.5;
+}
+.pat-card-info-meta {
+  margin: 0;
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   RESPONSIVE
+   ══════════════════════════════════════════════════════════════════════ */
+@media (max-width: 900px) {
+  .pat-hero { grid-template-columns: 1fr; }
+  .pat-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 768px) {
+  .pat-dash { padding: 20px 16px 32px; }
+  .pat-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .pat-header-stats {
+    width: 100%;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .pat-greeting { font-size: 19px; }
+  .pat-card { padding: 16px 18px; }
+  .pat-hero-date { font-size: 24px; }
+  .pat-hero-time { font-size: 16px; }
+}
+@media (max-width: 480px) {
+  .pat-header-stats { gap: 8px; }
+  .pat-stat-value { font-size: 18px; }
+  .pat-row-btns { flex-direction: column; }
 }

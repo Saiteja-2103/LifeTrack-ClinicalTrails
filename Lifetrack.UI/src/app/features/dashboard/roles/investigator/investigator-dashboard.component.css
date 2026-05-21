@@ -1,7 +1,206 @@
-/* .inv-banner is defined in global styles.css */
+/* ── Root ─────────────────────────────────────────────────────────────── */
+.inv-dash {
+  padding: 24px;
+  max-width: 1100px;
+  margin: 0 auto;
+  font-family: inherit;
+  color: inherit;
+}
 
-/* My Assignments dot — unique to this role */
-.assign-dot { background: #059669; }
+/* ── Header ───────────────────────────────────────────────────────────── */
+.dash-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e5e7eb;
+  margin-bottom: 20px;
+}
+.dash-header-left  { display: flex; align-items: center; gap: 12px; }
+.dash-header-right { display: flex; align-items: center; gap: 8px; }
 
-/* Recent AEs full-width row */
-.inv-ae-row { margin-bottom: 24px; }
+.dash-icon {
+  width: 40px; height: 40px;
+  background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  color: #0369a1; flex-shrink: 0;
+}
+.dash-title { margin: 0; font-weight: 600; font-size: 15px; }
+.dash-sub   { margin: 2px 0 0; font-size: 12px; color: #6b7280; }
+
+.hdr-btn {
+  display: inline-flex; align-items: center; position: relative;
+  padding: 7px 14px; font-size: 13px; font-weight: 500;
+  background: #fff; border: 1px solid #e5e7eb;
+  border-radius: 8px; cursor: pointer; color: #334155;
+  transition: all .15s;
+}
+.hdr-btn:hover { background: #f9fafb; border-color: #cbd5e1; }
+
+.notif-dot {
+  width: 7px; height: 7px;
+  background: #ef4444;
+  border-radius: 50%;
+  margin-left: 8px;
+  box-shadow: 0 0 0 2px #fef2f2;
+}
+
+/* ── KPI Strip ────────────────────────────────────────────────────────── */
+.kpi-strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.kpi-card {
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 1rem;
+}
+.kpi-label { margin: 0; font-size: 13px; color: #6b7280; }
+.kpi-value { margin: 4px 0 0; font-size: 26px; font-weight: 600; color: #111827; }
+.kpi-warn  { color: #d97706; }
+
+/* ── Alert Banner ─────────────────────────────────────────────────────── */
+.alert-banner {
+  border-radius: 10px;
+  padding: 12px 16px;
+  margin-bottom: 20px;
+  display: flex; align-items: center; gap: 10px;
+}
+.alert-danger {
+  background: #fef2f2;
+  border: 1px solid #fca5a5;
+}
+.alert-body  { flex: 1; }
+.alert-title { margin: 0; font-size: 13px; font-weight: 600; color: #7f1d1d; }
+.alert-sub   { margin: 2px 0 0; font-size: 12px; color: #b91c1c; }
+.alert-action {
+  padding: 6px 12px; font-size: 13px;
+  background: #fff; border: 1px solid #fca5a5;
+  border-radius: 6px; color: #7f1d1d; cursor: pointer; white-space: nowrap;
+}
+.alert-action:hover { background: #fef2f2; }
+
+/* ── Main Body ────────────────────────────────────────────────────────── */
+.dash-body {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 16px;
+}
+
+/* ── Panel ────────────────────────────────────────────────────────────── */
+.dash-panel {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+}
+.panel-hdr {
+  display: flex; justify-content: space-between;
+  align-items: center; margin-bottom: 12px;
+}
+.panel-title    { font-weight: 600; font-size: 14px; color: #111827; margin: 0; }
+.panel-sub-text { margin: 0; font-size: 12px; color: #9ca3af; }
+
+.panel-link {
+  display: flex; align-items: center;
+  padding: 4px 10px; font-size: 12px;
+  background: transparent; border: 1px solid #e5e7eb;
+  border-radius: 6px; color: #374151; cursor: pointer;
+}
+.panel-link:hover { background: #f9fafb; }
+
+/* ── Loading / Empty ──────────────────────────────────────────────────── */
+.loading-row {
+  display: flex; align-items: center; gap: 8px;
+  padding: 16px 0; color: #9ca3af; font-size: 13px;
+}
+.spinner-sm {
+  width: 16px; height: 16px;
+  border: 2px solid #e5e7eb; border-top-color: #0369a1;
+  border-radius: 50%;
+  animation: inv-spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+@keyframes inv-spin { to { transform: rotate(360deg); } }
+.empty-row { padding: 16px 0; font-size: 13px; color: #9ca3af; }
+
+/* ── Schedule / Assignments List ──────────────────────────────────────── */
+.sched-list { display: flex; flex-direction: column; gap: 8px; }
+.sched-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid #f3f4f6;
+  border-radius: 8px;
+  background: #fafafa;
+}
+.sched-site-col {
+  display: flex; align-items: center;
+  min-width: 90px; flex-shrink: 0;
+}
+.sched-site { font-size: 12px; color: #6b7280; }
+.sched-body { flex: 1; min-width: 0; }
+.sched-name { margin: 0; font-size: 13px; font-weight: 500; }
+.sched-meta { margin: 2px 0 0; font-size: 11px; color: #9ca3af; }
+
+/* ── Status Pill (base — colours come from global badge-* classes) ─────── */
+.status-pill {
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+/* ── Right Column ─────────────────────────────────────────────────────── */
+.dash-right { display: flex; flex-direction: column; gap: 16px; }
+
+/* ── Quick Actions ────────────────────────────────────────────────────── */
+.qa-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.qa-btn {
+  padding: 10px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 12px;
+  text-align: left;
+  cursor: pointer;
+  color: #374151;
+  line-height: 1.4;
+}
+.qa-btn:hover { background: #f9fafb; }
+.qa-btn-danger { border-color: #fca5a5; color: #b91c1c; }
+.qa-btn-danger:hover { background: #fef2f2; }
+
+/* ── Recent AEs Mini List ─────────────────────────────────────────────── */
+.ae-mini-list { display: flex; flex-direction: column; gap: 8px; }
+.ae-mini-item {
+  display: flex; align-items: center; gap: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #f3f4f6;
+}
+.ae-mini-item:last-child { border-bottom: none; padding-bottom: 0; }
+.ae-mini-body { flex: 1; min-width: 0; }
+.ae-mini-desc {
+  margin: 0; font-size: 13px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.ae-mini-meta { margin: 2px 0 0; font-size: 11px; color: #9ca3af; }
+
+/* ── Audit Note ───────────────────────────────────────────────────────── */
+.audit-note { padding: 10px 1.25rem; }
+
+/* ── Responsive ───────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .dash-body  { grid-template-columns: 1fr; }
+  .kpi-strip  { grid-template-columns: repeat(2, 1fr); }
+  .inv-dash   { padding: 16px; }
+}

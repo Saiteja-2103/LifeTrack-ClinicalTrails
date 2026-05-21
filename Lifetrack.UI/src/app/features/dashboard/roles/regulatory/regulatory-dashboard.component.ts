@@ -14,10 +14,25 @@ import { DashboardService } from '../../../../core/services/dashboard.service';
 export class RegulatoryDashboardComponent implements OnInit {
   user: UserInfo | null;
 
+  today = new Date();
+
   totalDocs = 0; approvedDocs = 0; severeAEs = 0; kpiReports = 0;
   recentDocs: any[] = [];
   recentDeviations: any[] = [];
   loading = true;
+
+  /** Percentage of approved documents out of total. */
+  get complianceScore(): number {
+    if (!this.totalDocs) return 0;
+    return Math.round((this.approvedDocs / this.totalDocs) * 100);
+  }
+
+  /** Count of documents with "Under Review" or "Pending" status. */
+  get pendingReviewDocs(): number {
+    return this.recentDocs.filter(
+      (d: any) => d.status === 'Under Review' || d.status === 'Pending'
+    ).length;
+  }
 
   constructor(
     private auth: AuthService,

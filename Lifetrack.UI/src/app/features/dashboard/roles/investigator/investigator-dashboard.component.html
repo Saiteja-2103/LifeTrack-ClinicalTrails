@@ -1,123 +1,141 @@
-<main class="main-content">
+<main class="inv-dash">
 
-  <div class="welcome-banner inv-banner">
-    <div class="welcome-text">
-      <h1>Welcome back, {{ firstName }}</h1>
-      <p>Investigator / Physician &nbsp;·&nbsp; Patient enrollment, visits &amp; AE reporting</p>
+  <!-- ── Header ────────────────────────────────────────────────────────────── -->
+  <div class="dash-header">
+    <div class="dash-header-left">
+      <div class="dash-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+      </div>
+      <div>
+        <p class="dash-title">Investigator console</p>
+        <p class="dash-sub">{{ firstName }} &nbsp;·&nbsp; Investigator &nbsp;·&nbsp; {{ today | date:'EEEE, d MMM' }}</p>
+      </div>
+    </div>
+    <div class="dash-header-right">
+      <button class="hdr-btn" (click)="manageAdverseEvents()" title="Open adverse events">
+        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:6px"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        <span *ngIf="adverseEvents > 0">{{ adverseEvents }} alert{{ adverseEvents !== 1 ? 's' : '' }}</span>
+        <span *ngIf="adverseEvents === 0">No alerts</span>
+        <span *ngIf="adverseEvents > 0" class="notif-dot"></span>
+      </button>
     </div>
   </div>
 
-  <!-- Stats -->
-  <div class="stats-grid">
-    <div class="stat-card">
-      <div class="stat-icon green"><span class="icon-label">ST</span></div>
-      <div class="stat-body">
-        <p class="stat-label">Sites</p>
-        <h3 class="stat-value">{{ loading ? '...' : sites }}</h3>
-      </div>
+  <!-- ── KPI Strip ──────────────────────────────────────────────────────────── -->
+  <div class="kpi-strip">
+    <div class="kpi-card">
+      <p class="kpi-label">My Sites</p>
+      <p class="kpi-value">{{ loading ? '—' : sites }}</p>
     </div>
-    <div class="stat-card">
-      <div class="stat-icon teal"><span class="icon-label">PT</span></div>
-      <div class="stat-body">
-        <p class="stat-label">Patients</p>
-        <h3 class="stat-value">{{ loading ? '...' : patients }}</h3>
-      </div>
+    <div class="kpi-card">
+      <p class="kpi-label">Active Patients</p>
+      <p class="kpi-value">{{ loading ? '—' : patients }}</p>
     </div>
-    <div class="stat-card">
-      <div class="stat-icon amber"><span class="icon-label">AE</span></div>
-      <div class="stat-body">
-        <p class="stat-label">Adverse Events</p>
-        <h3 class="stat-value">{{ loading ? '...' : adverseEvents }}</h3>
-      </div>
+    <div class="kpi-card">
+      <p class="kpi-label">Open AEs</p>
+      <p class="kpi-value" [class.kpi-warn]="adverseEvents > 0">{{ loading ? '—' : adverseEvents }}</p>
     </div>
-    <div class="stat-card">
-      <div class="stat-icon cyan"><span class="icon-label">VS</span></div>
-      <div class="stat-body">
-        <p class="stat-label">Visits</p>
-        <h3 class="stat-value">{{ loading ? '...' : visits }}</h3>
-      </div>
+    <div class="kpi-card">
+      <p class="kpi-label">Total Visits</p>
+      <p class="kpi-value">{{ loading ? '—' : visits }}</p>
     </div>
   </div>
 
-  <!-- Content -->
-  <div class="content-grid wide">
+  <!-- ── Alert Banner ───────────────────────────────────────────────────────── -->
+  <div class="alert-banner alert-danger" *ngIf="!loading && adverseEvents > 0">
+    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A32D2D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    <div class="alert-body">
+      <p class="alert-title">{{ adverseEvents }} open adverse event{{ adverseEvents !== 1 ? 's' : '' }} requiring review</p>
+      <p class="alert-sub">Review and update status promptly · Protocol safety is your priority</p>
+    </div>
+    <button class="alert-action" (click)="manageAdverseEvents()">Review</button>
+  </div>
 
-    <!-- My Assignments -->
-    <div class="panel">
-      <div class="panel-header">
-        <h3 class="panel-title">My Assignments</h3>
-        <span class="panel-badge">Protocol · Site</span>
+  <!-- ── Main Body ──────────────────────────────────────────────────────────── -->
+  <div class="dash-body">
+
+    <!-- Left: Protocol Assignments (acts as today's schedule) -->
+    <div class="dash-panel">
+      <div class="panel-hdr">
+        <span class="panel-title">My Protocol Assignments</span>
+        <button class="panel-link" (click)="manageVisits()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:3px"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Visits
+        </button>
       </div>
-      <div *ngIf="assignmentsLoading" class="loading-state"><div class="spinner"></div></div>
-      <div *ngIf="!assignmentsLoading && myAssignments.length === 0" class="empty-state">
-        <p>No assignments yet. An Admin or Trial Manager will assign you to a protocol and site.</p>
+
+      <div *ngIf="assignmentsLoading" class="loading-row">
+        <div class="spinner-sm"></div>
+        <span>Loading assignments…</span>
       </div>
-      <div class="data-list" *ngIf="!assignmentsLoading && myAssignments.length > 0">
-        <div class="data-item" *ngFor="let a of myAssignments">
-          <div class="data-item-dot assign-dot"></div>
-          <div class="data-item-body">
-            <p class="data-item-title">{{ protocolName(a.protocolID) }}</p>
-            <p class="data-item-sub">
-              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:2px"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> {{ siteName(a.siteID) }}
-              <ng-container *ngIf="a.initiationDate">
-                &nbsp;·&nbsp; Started {{ a.initiationDate | date:'MMM d, y' }}
-              </ng-container>
-            </p>
+
+      <div *ngIf="!assignmentsLoading && myAssignments.length === 0" class="empty-row">
+        No assignments yet. An Admin or Trial Manager will assign you to a protocol and site.
+      </div>
+
+      <div class="sched-list" *ngIf="!assignmentsLoading && myAssignments.length > 0">
+        <div class="sched-item" *ngFor="let a of myAssignments">
+          <div class="sched-site-col">
+            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:3px;opacity:0.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            <span class="sched-site">{{ siteName(a.siteID) }}</span>
           </div>
-          <span class="badge" [ngClass]="assignmentStatusClass(a.status)">{{ a.status }}</span>
+          <div class="sched-body">
+            <p class="sched-name">{{ protocolName(a.protocolID) }}</p>
+            <p class="sched-meta" *ngIf="a.initiationDate">Started {{ a.initiationDate | date:'MMM d, y' }}</p>
+          </div>
+          <span class="status-pill" [ngClass]="assignmentStatusClass(a.status)">{{ a.status }}</span>
         </div>
       </div>
     </div>
 
-    <!-- Quick Actions -->
-    <div class="panel">
-      <div class="panel-header">
-        <h3 class="panel-title">Quick Actions</h3>
-      </div>
-      <div class="action-grid">
-        <button class="action-btn" (click)="manageEnrollments()">
-          <span class="action-btn-label">Enroll Patient</span>
-          <span class="action-btn-sub">Add patients to protocols</span>
-        </button>
-        <button class="action-btn" (click)="manageVisits()">
-          <span class="action-btn-label">Manage Visits</span>
-          <span class="action-btn-sub">Schedule &amp; record visits</span>
-        </button>
-        <button class="action-btn" (click)="manageAdverseEvents()">
-          <span class="action-btn-label">Adverse Events</span>
-          <span class="action-btn-sub">Report &amp; track AEs</span>
-        </button>
-        <button class="action-btn" (click)="manageDeviations()">
-          <span class="action-btn-label">Deviations</span>
-          <span class="action-btn-sub">Report protocol deviations</span>
-        </button>
-      </div>
-    </div>
+    <!-- Right column -->
+    <div class="dash-right">
 
-  </div>
-
-  <!-- Row 2: Recent Adverse Events (full width) -->
-  <div class="panel inv-ae-row">
-    <div class="panel-header">
-      <h3 class="panel-title">Recent Adverse Events</h3>
-      <span class="panel-badge">Latest 6 &nbsp;·&nbsp; Report via Quick Actions</span>
-    </div>
-    <div *ngIf="aesLoading" class="loading-state"><div class="spinner"></div></div>
-    <div *ngIf="!aesLoading && recentAEs.length === 0" class="empty-state">
-      <p>No adverse events on record.</p>
-    </div>
-    <div class="data-list" *ngIf="!aesLoading && recentAEs.length > 0">
-      <div class="data-item" *ngFor="let ae of recentAEs">
-        <div class="data-item-dot ae-dot"></div>
-        <div class="data-item-body">
-          <p class="data-item-title">{{ ae.description ?? '—' }}</p>
-          <p class="data-item-sub">Patient #{{ ae.patientID }} &nbsp;·&nbsp; {{ ae.reportedDate | date:'MMM d, y' }}</p>
-        </div>
-        <div class="badge-stack">
-          <span class="badge" [ngClass]="aeSeverityClass(ae.severity)">{{ ae.severity }}</span>
-          <span class="badge" [ngClass]="aeStatusClass(ae.status)">{{ ae.status }}</span>
+      <!-- Quick Actions -->
+      <div class="dash-panel">
+        <p class="panel-title" style="margin:0 0 14px">Quick actions</p>
+        <div class="qa-grid">
+          <button class="qa-btn" (click)="manageEnrollments()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:block;margin-bottom:5px"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+            Enroll patient
+          </button>
+          <button class="qa-btn qa-btn-danger" (click)="manageAdverseEvents()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:block;margin-bottom:5px"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            Report AE
+          </button>
+          <button class="qa-btn" (click)="manageVisits()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:block;margin-bottom:5px"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            Visit checklist
+          </button>
+          <button class="qa-btn" (click)="manageDeviations()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:block;margin-bottom:5px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            Log deviation
+          </button>
         </div>
       </div>
+
+      <!-- Recent AEs mini list -->
+      <div class="dash-panel">
+        <p class="panel-title" style="margin:0 0 12px">Recent adverse events</p>
+        <div *ngIf="aesLoading" class="loading-row"><div class="spinner-sm"></div></div>
+        <div *ngIf="!aesLoading && recentAEs.length === 0" class="empty-row">No AEs on record.</div>
+        <div class="ae-mini-list" *ngIf="!aesLoading && recentAEs.length > 0">
+          <div class="ae-mini-item" *ngFor="let ae of recentAEs | slice:0:3">
+            <div class="ae-mini-body">
+              <p class="ae-mini-desc">{{ ae.description ?? '—' }}</p>
+              <p class="ae-mini-meta">Patient #{{ ae.patientID }} &nbsp;·&nbsp; {{ ae.reportedDate | date:'MMM d' }}</p>
+            </div>
+            <span class="status-pill" [ngClass]="aeSeverityClass(ae.severity)">{{ ae.severity }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Audit note -->
+      <div class="dash-panel audit-note">
+        <p class="panel-title" style="margin:0 0 4px">Audit</p>
+        <p class="panel-sub-text">All actions logged &nbsp;·&nbsp; GxP / HIPAA</p>
+      </div>
+
     </div>
   </div>
 

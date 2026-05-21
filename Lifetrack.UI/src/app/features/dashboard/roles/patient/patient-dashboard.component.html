@@ -1,204 +1,213 @@
-<main class="main-content">
+<main class="pat-dash">
 
-  <!-- Welcome Banner -->
-  <div class="welcome-banner patient-banner">
-    <div class="welcome-text">
-      <h1>Welcome, {{ firstName }}</h1>
-      <p>Clinical Trial Participant &nbsp;·&nbsp; {{ user?.email }}</p>
+  <!-- ── Page Header (NOT a navbar — just a clean title row) ─────────────── -->
+  <div class="pat-header">
+    <div class="pat-header-left">
+      <p class="pat-greeting">Welcome back, {{ firstName }}</p>
+      <p class="pat-sub">{{ activeStudyName }} &nbsp;·&nbsp; {{ today | date:'EEEE, d MMMM' }}</p>
     </div>
-  </div>
-
-  <!-- No Patient Record Warning -->
-  <div class="alert-info" *ngIf="!loading && noPatientRecord">
-    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
-         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/>
-      <line x1="12" y1="16" x2="12.01" y2="16"/>
-    </svg>
-    Your account is not yet linked to a patient record. Please contact the trial coordinator.
-  </div>
-
-  <!-- Stats Grid -->
-  <div class="stats-grid" *ngIf="!noPatientRecord">
-    <div class="stat-card">
-      <div class="stat-icon green"><span class="icon-label">EN</span></div>
-      <div class="stat-body">
-        <p class="stat-label">My Enrollments</p>
-        <h3 class="stat-value">{{ loading ? '...' : statsEnrollments }}</h3>
+    <div class="pat-header-stats" *ngIf="!loading && !noPatientRecord">
+      <div class="pat-stat">
+        <p class="pat-stat-value">{{ statsActiveEnrollments }}</p>
+        <p class="pat-stat-label">Active trials</p>
       </div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-icon teal"><span class="icon-label">AC</span></div>
-      <div class="stat-body">
-        <p class="stat-label">Active Trials</p>
-        <h3 class="stat-value">{{ loading ? '...' : statsActiveEnrollments }}</h3>
+      <div class="pat-stat">
+        <p class="pat-stat-value">{{ statsUpcomingVisits }}</p>
+        <p class="pat-stat-label">Upcoming visits</p>
       </div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-icon blue"><span class="icon-label">VS</span></div>
-      <div class="stat-body">
-        <p class="stat-label">Upcoming Visits</p>
-        <h3 class="stat-value">{{ detailsLoading ? '...' : statsUpcomingVisits }}</h3>
-      </div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-icon amber"><span class="icon-label">NT</span></div>
-      <div class="stat-body">
-        <p class="stat-label">Notifications</p>
-        <h3 class="stat-value">{{ loading ? '...' : statsNotifications }}</h3>
+      <div class="pat-stat">
+        <p class="pat-stat-value" [class.pat-stat-warn]="statsNotifications > 0">{{ statsNotifications }}</p>
+        <p class="pat-stat-label">Messages</p>
       </div>
     </div>
   </div>
 
-  <!-- Row 1: My Enrollments + Account Details -->
-  <div class="content-grid wide" *ngIf="!noPatientRecord">
+  <!-- ── Not linked warning ──────────────────────────────────────────────── -->
+  <div class="pat-warn-card" *ngIf="!loading && noPatientRecord">
+    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A32D2D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    <div>
+      <p class="pat-warn-title">Account not linked to a patient record</p>
+      <p class="pat-warn-sub">Please contact your trial coordinator to complete your enrollment setup.</p>
+    </div>
+  </div>
 
-    <!-- My Enrollments -->
-    <div class="panel">
-      <div class="panel-header">
-        <h3 class="panel-title">My Trial Enrollments</h3>
-        <span class="panel-badge">{{ enrollments.length }} enrollment{{ enrollments.length !== 1 ? 's' : '' }}</span>
-      </div>
-      <div *ngIf="detailsLoading" class="loading-state"><div class="spinner"></div></div>
-      <div *ngIf="!detailsLoading && enrollments.length === 0" class="empty-state">
-        <p>You have not been enrolled in any trials yet.<br>Your coordinator will add you when ready.</p>
-      </div>
-      <div class="data-list" *ngIf="!detailsLoading && enrollments.length > 0">
-        <div class="data-item" *ngFor="let e of enrollments">
-          <div class="data-item-dot pt-dot"></div>
-          <div class="data-item-body">
-            <p class="data-item-title">{{ protocolName(e.siteProtocolID) }}</p>
-            <p class="data-item-sub">
-              <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none"
-                   stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                   style="vertical-align:middle;margin-right:2px">
-                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-                <polyline points="9 22 9 12 15 12 15 22"/>
-              </svg>
-              {{ siteName(e.siteProtocolID) }}
-              &nbsp;·&nbsp; Enrolled {{ e.enrollmentDate | date:'MMM d, y' }}
-              <ng-container *ngIf="e.consentDate">
-                &nbsp;·&nbsp; Consent {{ e.consentDate | date:'MMM d, y' }}
-              </ng-container>
-            </p>
+  <ng-container *ngIf="!noPatientRecord">
+
+    <!-- ── Hero: Next Visit + Daily Check-in (2-col on desktop) ──────────── -->
+    <div class="pat-hero">
+
+      <!-- Next visit hero card -->
+      <div class="pat-card pat-card-hero">
+        <div class="pat-card-hdr">
+          <span class="pat-card-eyebrow">Your next visit</span>
+          <span class="pat-pill" *ngIf="!detailsLoading && nextVisit" [ngClass]="visitStatusClass(nextVisit.status)">{{ nextVisit.status }}</span>
+        </div>
+
+        <ng-container *ngIf="detailsLoading">
+          <p class="pat-hero-title pat-skeleton">Loading…</p>
+        </ng-container>
+
+        <ng-container *ngIf="!detailsLoading && nextVisit">
+          <p class="pat-hero-date">{{ nextVisit.visitDate | date:'EEE, d MMM' }}</p>
+          <p class="pat-hero-time">{{ nextVisit.visitDate | date:'h:mm a' }}</p>
+          <p class="pat-hero-meta">{{ visitProtocolName(nextVisit.enrollmentID) }}</p>
+
+          <div class="pat-row-btns">
+            <button class="pat-btn-outline">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:5px"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              Directions
+            </button>
+            <button class="pat-btn-outline">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:5px"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              Reschedule
+            </button>
           </div>
-          <span class="badge" [ngClass]="enrollmentStatusClass(e.status)">{{ e.status }}</span>
-        </div>
-      </div>
-    </div>
+        </ng-container>
 
-    <!-- Account Details -->
-    <div class="panel">
-      <div class="panel-header">
-        <h3 class="panel-title">Account Details</h3>
+        <ng-container *ngIf="!detailsLoading && !nextVisit">
+          <p class="pat-hero-empty">No upcoming visits</p>
+          <p class="pat-hero-meta">Your coordinator will schedule your next visit soon.</p>
+        </ng-container>
       </div>
-      <div *ngIf="loading" class="loading-state"><div class="spinner"></div></div>
-      <div class="profile-grid-2" *ngIf="!loading">
-        <div class="profile-item">
-          <span class="profile-label">Full Name</span>
-          <span class="profile-value">{{ user?.name ?? '—' }}</span>
-        </div>
-        <div class="profile-item">
-          <span class="profile-label">Email</span>
-          <span class="profile-value">{{ user?.email ?? '—' }}</span>
-        </div>
-        <div class="profile-item">
-          <span class="profile-label">Date of Birth</span>
-          <span class="profile-value">{{ formattedDOB }}</span>
-        </div>
-        <div class="profile-item">
-          <span class="profile-label">Contact</span>
-          <span class="profile-value">{{ patientRecord?.contactInfo || '—' }}</span>
-        </div>
-        <div class="profile-item">
-          <span class="profile-label">Patient ID</span>
-          <span class="profile-value mono">#{{ patientRecord?.patientID }}</span>
-        </div>
-        <div class="profile-item">
-          <span class="profile-label">Trial Status</span>
-          <span class="badge" [ngClass]="enrollmentStatusClass(patientRecord?.enrollmentStatus)">
-            {{ patientRecord?.enrollmentStatus ?? '—' }}
-          </span>
-        </div>
-      </div>
-    </div>
 
-  </div>
-
-  <!-- Row 2: Upcoming Visits + Adverse Events -->
-  <div class="content-grid" *ngIf="!noPatientRecord">
-
-    <!-- Upcoming Visits -->
-    <div class="panel">
-      <div class="panel-header">
-        <h3 class="panel-title">Upcoming Visits</h3>
-        <span class="panel-badge">Scheduled</span>
-      </div>
-      <div *ngIf="detailsLoading" class="loading-state"><div class="spinner"></div></div>
-      <div *ngIf="!detailsLoading && upcomingVisits.length === 0" class="empty-state">
-        <p>No upcoming visits scheduled.</p>
-      </div>
-      <div class="data-list" *ngIf="!detailsLoading && upcomingVisits.length > 0">
-        <div class="data-item" *ngFor="let v of upcomingVisits">
-          <div class="data-item-dot nt-dot"></div>
-          <div class="data-item-body">
-            <p class="data-item-title">{{ visitProtocolName(v.enrollmentID) }}</p>
-            <p class="data-item-sub">
-              {{ v.visitDate | date:'EEE, MMM d, y' }}
-              <ng-container *ngIf="v.notes"> &nbsp;·&nbsp; {{ v.notes | slice:0:60 }}{{ v.notes.length > 60 ? '…' : '' }}</ng-container>
-            </p>
+      <!-- Right side: stack of two small cards -->
+      <div class="pat-hero-right">
+        <!-- Daily Check-in -->
+        <div class="pat-action-card pat-action-green">
+          <div class="pat-action-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
           </div>
-          <span class="badge" [ngClass]="visitStatusClass(v.status)">{{ v.status }}</span>
+          <div class="pat-action-body">
+            <p class="pat-action-title">Daily check-in</p>
+            <p class="pat-action-sub">Takes 30 seconds</p>
+          </div>
+          <button class="pat-action-btn">Start</button>
+        </div>
+
+        <!-- Report Symptom -->
+        <div class="pat-action-card pat-action-red">
+          <div class="pat-action-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="14" rx="2" ry="2"/><path d="M16 6V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="11" x2="12" y2="17"/><line x1="9" y1="14" x2="15" y2="14"/></svg>
+          </div>
+          <div class="pat-action-body">
+            <p class="pat-action-title">Not feeling well?</p>
+            <p class="pat-action-sub">Report a symptom</p>
+          </div>
+          <button class="pat-action-btn">Report</button>
         </div>
       </div>
     </div>
 
-    <!-- My Notifications -->
-    <div class="panel">
-      <div class="panel-header">
-        <h3 class="panel-title">My Notifications</h3>
-        <span class="panel-badge">Latest 6</span>
-      </div>
-      <div *ngIf="loading" class="loading-state"><div class="spinner"></div></div>
-      <div *ngIf="!loading && notifications.length === 0" class="empty-state">
-        <p>No notifications yet.</p>
-      </div>
-      <div *ngIf="!loading && notifications.length > 0">
-        <div class="notif-item" *ngFor="let n of notifications">
-          <div class="notif-dot" [class.read]="n.status === 'Read'"></div>
-          <div>
-            <p class="notif-text">{{ n.message }}</p>
-            <p class="notif-time">{{ n.category }} &nbsp;·&nbsp; {{ n.createdDate | date:'MMM d, y' }}</p>
+    <!-- ── Two-column main content ─────────────────────────────────────── -->
+    <div class="pat-grid">
+
+      <!-- LEFT: My trials + upcoming visits -->
+      <div class="pat-col">
+
+        <!-- My trial enrollments -->
+        <div class="pat-card">
+          <div class="pat-card-hdr">
+            <span class="pat-card-title">My trial enrollments</span>
+            <span class="pat-card-badge" *ngIf="!detailsLoading">{{ statsActiveEnrollments }} active</span>
+          </div>
+
+          <div *ngIf="detailsLoading" class="pat-loading"><div class="pat-spinner"></div><span>Loading…</span></div>
+          <div *ngIf="!detailsLoading && enrollments.length === 0" class="pat-empty">You haven't been enrolled in any trials yet.</div>
+
+          <div *ngIf="!detailsLoading && enrollments.length > 0">
+            <div class="pat-list-item" *ngFor="let e of enrollments; let last = last" [class.pat-no-border]="last">
+              <div class="pat-list-icon" [class.pat-list-icon-green]="e.status === 'Active'">
+                <svg *ngIf="e.status === 'Active'" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#047857" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                <svg *ngIf="e.status !== 'Active'" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              </div>
+              <div class="pat-list-body">
+                <p class="pat-list-title">{{ protocolName(e.siteProtocolID) }}</p>
+                <p class="pat-list-meta">{{ siteName(e.siteProtocolID) }} &nbsp;·&nbsp; Enrolled {{ e.enrollmentDate | date:'MMM d, y' }}</p>
+              </div>
+              <span class="pat-pill" [ngClass]="enrollmentStatusClass(e.status)">{{ e.status }}</span>
+            </div>
           </div>
         </div>
+
+        <!-- Upcoming visits -->
+        <div class="pat-card">
+          <div class="pat-card-hdr">
+            <span class="pat-card-title">Upcoming visits</span>
+            <span class="pat-card-badge" *ngIf="!detailsLoading">{{ statsUpcomingVisits }} scheduled</span>
+          </div>
+
+          <div *ngIf="detailsLoading" class="pat-loading"><div class="pat-spinner"></div></div>
+          <div *ngIf="!detailsLoading && upcomingVisits.length === 0" class="pat-empty">No upcoming visits scheduled.</div>
+
+          <div *ngIf="!detailsLoading && upcomingVisits.length > 0">
+            <div class="pat-visit-item" *ngFor="let v of upcomingVisits | slice:0:5; let last = last" [class.pat-no-border]="last">
+              <div class="pat-visit-date">
+                <span class="pat-visit-day">{{ v.visitDate | date:'d' }}</span>
+                <span class="pat-visit-mon">{{ v.visitDate | date:'MMM' }}</span>
+              </div>
+              <div class="pat-list-body">
+                <p class="pat-list-title">{{ visitProtocolName(v.enrollmentID) }}</p>
+                <p class="pat-list-meta">{{ v.visitDate | date:'EEE · h:mm a' }}</p>
+              </div>
+              <span class="pat-pill" [ngClass]="visitStatusClass(v.status)">{{ v.status }}</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT: Messages + reported symptoms -->
+      <div class="pat-col">
+
+        <!-- Messages -->
+        <div class="pat-card">
+          <div class="pat-card-hdr">
+            <span class="pat-card-title">Messages</span>
+            <span class="pat-card-badge pat-card-badge-blue" *ngIf="!loading && statsNotifications > 0">{{ statsNotifications }} new</span>
+          </div>
+
+          <div *ngIf="loading" class="pat-loading"><div class="pat-spinner"></div></div>
+          <div *ngIf="!loading && notifications.length === 0" class="pat-empty">No messages yet.</div>
+
+          <div *ngIf="!loading && notifications.length > 0">
+            <div class="pat-msg-item" *ngFor="let n of notifications | slice:0:4; let last = last" [class.pat-no-border]="last">
+              <div class="pat-msg-avatar">{{ messageAvatar(n) }}</div>
+              <div class="pat-list-body">
+                <p class="pat-list-title">{{ n.category ?? 'System' }}</p>
+                <p class="pat-list-meta">{{ n.message }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Reported symptoms / Adverse events -->
+        <div class="pat-card" *ngIf="!detailsLoading && adverseEvents.length > 0">
+          <div class="pat-card-hdr">
+            <span class="pat-card-title">My reported symptoms</span>
+            <span class="pat-card-badge">{{ adverseEvents.length }} on record</span>
+          </div>
+
+          <div class="pat-list-item" *ngFor="let ae of adverseEvents | slice:0:4; let last = last" [class.pat-no-border]="last">
+            <div class="pat-list-icon pat-list-icon-red">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#b91c1c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </div>
+            <div class="pat-list-body">
+              <p class="pat-list-title">{{ ae.description ?? '—' }}</p>
+              <p class="pat-list-meta">Reported {{ ae.reportedDate | date:'MMM d, y' }}</p>
+            </div>
+            <span class="pat-pill" [ngClass]="aeSeverityClass(ae.severity)">{{ ae.severity }}</span>
+          </div>
+        </div>
+
+        <!-- Trial Info card -->
+        <div class="pat-card pat-info-card">
+          <p class="pat-card-title" style="margin:0 0 8px">Your trial coordinator</p>
+          <p class="pat-card-info">Reach out anytime with questions about your study, medications, or visit logistics.</p>
+          <p class="pat-card-info-meta">Patient ID #{{ patientRecord?.patientID }} &nbsp;·&nbsp; {{ patientRecord?.contactInfo || 'No contact info on file' }}</p>
+        </div>
+
       </div>
     </div>
-
-  </div>
-
-  <!-- Row 3: Adverse Events (full width) -->
-  <div class="panel panel-full-row" *ngIf="!noPatientRecord">
-    <div class="panel-header">
-      <h3 class="panel-title">My Adverse Events</h3>
-      <span class="panel-badge">{{ adverseEvents.length }} record{{ adverseEvents.length !== 1 ? 's' : '' }}</span>
-    </div>
-    <div *ngIf="detailsLoading" class="loading-state"><div class="spinner"></div></div>
-    <div *ngIf="!detailsLoading && adverseEvents.length === 0" class="empty-state">
-      <p>No adverse events on record.</p>
-    </div>
-    <div class="data-list" *ngIf="!detailsLoading && adverseEvents.length > 0">
-      <div class="data-item" *ngFor="let ae of adverseEvents">
-        <div class="data-item-dot ae-dot"></div>
-        <div class="data-item-body">
-          <p class="data-item-title">{{ ae.description ?? '—' }}</p>
-          <p class="data-item-sub">Reported {{ ae.reportedDate | date:'MMM d, y' }}</p>
-        </div>
-        <div class="badge-stack">
-          <span class="badge" [ngClass]="aeSeverityClass(ae.severity)">{{ ae.severity }}</span>
-          <span class="badge" [ngClass]="aeStatusClass(ae.status)">{{ ae.status }}</span>
-        </div>
-      </div>
-    </div>
-  </div>
+  </ng-container>
 
 </main>

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, map, catchError, of } from 'rxjs';
+import { Observable, map, catchError, of, timeout } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
 export interface PagedResult<T> {
@@ -11,6 +11,10 @@ export interface PagedResult<T> {
   items: T[];
 }
 
+/** Max wait per request before we give up and use a fallback. Prevents
+ *  dashboards from being stuck on "loading" if one downstream service stalls. */
+const REQUEST_TIMEOUT_MS = 8000;
+
 @Injectable({ providedIn: 'root' })
 export class DashboardService {
   private readonly api = environment.apiUrl;
@@ -20,6 +24,7 @@ export class DashboardService {
     const qs = new URLSearchParams({ page: '1', pageSize: '1', ...params });
     return this.http.get<PagedResult<unknown>>(`${this.api}/${resource}?${qs}`)
       .pipe(
+        timeout(REQUEST_TIMEOUT_MS),
         map(r => r?.totalCount ?? 0),
         catchError(err => {
           console.error(`[Dashboard] count(${resource}) failed`, err);
@@ -32,6 +37,7 @@ export class DashboardService {
     const qs = new URLSearchParams({ page: '1', pageSize: '6', ...params });
     return this.http.get<PagedResult<T>>(`${this.api}/${resource}?${qs}`)
       .pipe(
+        timeout(REQUEST_TIMEOUT_MS),
         map(r => r?.items ?? []),
         catchError(err => {
           console.error(`[Dashboard] list(${resource}) failed`, err);

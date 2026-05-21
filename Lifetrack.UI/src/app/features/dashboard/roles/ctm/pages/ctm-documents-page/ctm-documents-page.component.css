@@ -7,75 +7,94 @@
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Header */
+/* ── Header — flat title row, no gradient bar ─────────────────────────── */
 .page-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 24px;
-  padding: 20px 24px;
-  background: linear-gradient(135deg, #0c4a6e, #0ea5e9);
-  border-radius: 12px;
-  color: #fff;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 16px !important;
+  margin-bottom: 20px !important;
+  padding: 0 0 16px 0 !important;
+  border-bottom: 1px solid #f1f5f9 !important;
+  background: transparent !important;
+  background-image: none !important;
+  border-radius: 0 !important;
+  color: inherit !important;
+  box-shadow: none !important;
 }
 
 .header-left {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 14px;
 }
 
 .btn-back {
-  background: rgba(255, 255, 255, 0.2);
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.4);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #fff;
+  color: #475569;
+  border: 1px solid #e2e8f0;
   border-radius: 8px;
-  padding: 8px 16px;
+  padding: 7px 14px;
   cursor: pointer;
-  font-size: 0.875rem;
-  transition: background 0.2s;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all .15s;
+  white-space: nowrap;
 }
-
 .btn-back:hover {
-  background: rgba(255, 255, 255, 0.35);
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  color: #0f172a;
 }
 
 .page-title {
   margin: 0;
-  font-size: 1.6rem;
+  font-size: 20px;
   font-weight: 700;
+  color: #0f172a;
+  letter-spacing: -0.01em;
+  background: linear-gradient(135deg, #0c4a6e 0%, #0ea5e9 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .page-subtitle {
   margin: 4px 0 0;
-  font-size: 0.875rem;
-  opacity: 0.85;
+  font-size: 13px;
+  color: #64748b;
+  opacity: 1;
 }
 
-/* Filter Bar */
+/* Filter Bar — compact pill-style row */
 .filter-bar {
   display: flex;
-  align-items: flex-end;
-  gap: 16px;
-  margin-bottom: 20px;
-  padding: 16px;
-  background: #f8fafc;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding: 10px 14px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
   border-radius: 10px;
-  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, .03);
 }
 
 .filter-group {
   display: flex;
-  flex-direction: column;
-  gap: 4px;
+  align-items: center;
+  gap: 8px;
 }
 
 .filter-label {
-  font-size: 0.8rem;
+  font-size: 11px;
   font-weight: 600;
-  color: #475569;
+  color: #64748b;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  white-space: nowrap;
 }
 
 .filter-select {

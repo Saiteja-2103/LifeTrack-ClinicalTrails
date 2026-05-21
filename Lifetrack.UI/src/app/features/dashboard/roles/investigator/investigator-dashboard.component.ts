@@ -17,6 +17,8 @@ import { environment } from '../../../../../environments/environment';
 export class InvestigatorDashboardComponent implements OnInit {
   user: UserInfo | null;
 
+  today = new Date();
+
   // ── Stats ──────────────────────────────────────────────────────────────────
   sites = 0; patients = 0; adverseEvents = 0; visits = 0;
   loading = true;

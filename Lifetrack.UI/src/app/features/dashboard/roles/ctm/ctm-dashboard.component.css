@@ -1,1 +1,187 @@
-/* CTM banner and .pr-dot are defined in global styles.css — nothing extra needed here */
+/* ── Root ─────────────────────────────────────────────────────────────── */
+.ctm-dash {
+  padding: 24px;
+  max-width: 1100px;
+  margin: 0 auto;
+  font-family: inherit;
+  color: inherit;
+}
+
+/* ── Header ───────────────────────────────────────────────────────────── */
+.dash-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e5e7eb;
+  margin-bottom: 20px;
+}
+.dash-header-left  { display: flex; align-items: center; gap: 12px; }
+.dash-header-right { display: flex; align-items: center; gap: 8px; }
+
+.dash-icon {
+  width: 40px; height: 40px;
+  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  color: #1d4ed8; flex-shrink: 0;
+}
+.dash-title { margin: 0; font-weight: 600; font-size: 15px; }
+.dash-sub   { margin: 2px 0 0; font-size: 12px; color: #6b7280; }
+
+.hdr-btn {
+  display: flex; align-items: center;
+  padding: 6px 12px; font-size: 13px;
+  background: #fff; border: 1px solid #e5e7eb;
+  border-radius: 8px; cursor: pointer; color: inherit;
+}
+.hdr-btn:hover { background: #f9fafb; }
+
+/* ── KPI Strip ────────────────────────────────────────────────────────── */
+.kpi-strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.kpi-card {
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 1rem;
+}
+.kpi-label { margin: 0; font-size: 13px; color: #6b7280; }
+.kpi-value { margin: 4px 0 0; font-size: 26px; font-weight: 600; color: #111827; }
+.kpi-warn  { color: #d97706; }
+
+/* ── Alert Banner ─────────────────────────────────────────────────────── */
+.alert-banner {
+  border-radius: 10px;
+  padding: 12px 16px;
+  margin-bottom: 20px;
+  display: flex; align-items: center; gap: 10px;
+}
+.alert-amber {
+  background: #fffbeb;
+  border: 1px solid #fcd34d;
+}
+.alert-body  { flex: 1; }
+.alert-title { margin: 0; font-size: 13px; font-weight: 600; color: #78350f; }
+.alert-sub   { margin: 2px 0 0; font-size: 12px; color: #92400e; }
+.alert-action {
+  padding: 6px 12px; font-size: 13px;
+  background: #fff; border: 1px solid #fcd34d;
+  border-radius: 6px; color: #78350f; cursor: pointer; white-space: nowrap;
+}
+.alert-action:hover { background: #fffbeb; }
+
+/* ── Main Body ────────────────────────────────────────────────────────── */
+.dash-body {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 16px;
+}
+
+/* ── Panel ────────────────────────────────────────────────────────────── */
+.dash-panel {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+}
+.panel-hdr {
+  display: flex; justify-content: space-between;
+  align-items: center; margin-bottom: 12px;
+}
+.panel-title { font-weight: 600; font-size: 14px; color: #111827; margin: 0; }
+.panel-note  { font-size: 11px; color: #9ca3af; }
+
+/* ── Chart Legend ─────────────────────────────────────────────────────── */
+.chart-legend {
+  display: flex; gap: 16px; margin-top: 8px;
+  font-size: 12px; color: #6b7280;
+}
+.legend-item { display: flex; align-items: center; gap: 5px; }
+.legend-line {
+  display: inline-block; width: 18px; height: 2px;
+}
+.legend-line.actual { background: #185FA5; }
+.legend-line.target { background: #9ca3af; }
+
+/* ── Loading / Empty ──────────────────────────────────────────────────── */
+.loading-row {
+  display: flex; align-items: center; gap: 8px;
+  padding: 16px 0; color: #9ca3af; font-size: 13px;
+}
+.spinner-sm {
+  width: 16px; height: 16px;
+  border: 2px solid #e5e7eb; border-top-color: #1d4ed8;
+  border-radius: 50%;
+  animation: ctm-spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+@keyframes ctm-spin { to { transform: rotate(360deg); } }
+.empty-row { padding: 16px 0; font-size: 13px; color: #9ca3af; }
+
+/* ── Protocols at a glance ────────────────────────────────────────────── */
+.proto-list { display: flex; flex-direction: column; gap: 14px; }
+.proto-row {
+  display: flex; justify-content: space-between;
+  align-items: center; font-size: 13px; margin-bottom: 4px;
+}
+.proto-name { font-weight: 500; }
+.proto-bar-track {
+  height: 6px;
+  background: #f3f4f6;
+  border-radius: 3px;
+  overflow: hidden;
+}
+.proto-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.4s ease;
+}
+.proto-bar-fill.bar-active     { background: #1D9E75; }
+.proto-bar-fill.bar-completed  { background: #185FA5; }
+.proto-bar-fill.bar-paused     { background: #EF9F27; }
+.proto-bar-fill.bar-draft      { background: #9ca3af; }
+.proto-bar-fill.bar-terminated { background: #E24B4A; }
+.proto-meta { margin: 4px 0 0; font-size: 11px; color: #9ca3af; }
+
+/* ── Status Pill ──────────────────────────────────────────────────────── */
+.status-pill {
+  font-size: 11px; padding: 3px 8px;
+  border-radius: 6px; white-space: nowrap;
+  font-weight: 500; flex-shrink: 0;
+}
+
+/* ── Right Column ─────────────────────────────────────────────────────── */
+.dash-right { display: flex; flex-direction: column; gap: 16px; }
+
+/* ── Quick Actions ────────────────────────────────────────────────────── */
+.qa-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.qa-btn {
+  padding: 10px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 12px;
+  text-align: left;
+  cursor: pointer;
+  color: #374151;
+  line-height: 1.4;
+}
+.qa-btn:hover { background: #f9fafb; }
+.qa-btn-danger { border-color: #fca5a5; color: #b91c1c; }
+.qa-btn-danger:hover { background: #fef2f2; }
+
+/* ── Responsive ───────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .dash-body { grid-template-columns: 1fr; }
+  .kpi-strip { grid-template-columns: repeat(2, 1fr); }
+  .ctm-dash  { padding: 16px; }
+}

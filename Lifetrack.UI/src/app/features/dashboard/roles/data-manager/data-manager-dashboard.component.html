@@ -1,122 +1,147 @@
-<main class="main-content">
+<main class="dm-dash">
 
-  <div class="welcome-banner dm-banner">
-    <div class="welcome-text">
-      <h1>Welcome back, {{ firstName }}</h1>
-      <p>Data Manager &nbsp;·&nbsp; Data quality, analytics &amp; reporting</p>
+  <!-- ── Header ────────────────────────────────────────────────────────────── -->
+  <div class="dash-header">
+    <div class="dash-header-left">
+      <div class="dash-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+      </div>
+      <div>
+        <p class="dash-title">Data manager dashboard</p>
+        <p class="dash-sub">{{ firstName }} &nbsp;·&nbsp; {{ loading ? '—' : protocolsCount }} protocols &nbsp;·&nbsp; {{ today | date:'EEEE, d MMM' }}</p>
+      </div>
+    </div>
+    <div class="dash-header-right">
+      <button class="hdr-btn" (click)="viewAdverseEvents()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:5px"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        New query
+      </button>
+      <button class="hdr-btn" (click)="viewReports()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:5px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        Build report
+      </button>
     </div>
   </div>
 
-  <!-- Stats -->
-  <div class="stats-grid">
-    <div class="stat-card">
-      <div class="stat-icon red"><span class="icon-label">AE</span></div>
-      <div class="stat-body">
-        <p class="stat-label">Open Adverse Events</p>
-        <h3 class="stat-value">{{ loading ? '...' : openAEs }}</h3>
-      </div>
+  <!-- ── KPI Strip ──────────────────────────────────────────────────────────── -->
+  <div class="kpi-strip">
+    <div class="kpi-card">
+      <p class="kpi-label">Data quality</p>
+      <p class="kpi-value kpi-good">{{ loading ? '—' : dataQualityScore }}%</p>
+      <p class="kpi-note kpi-good" *ngIf="!loading">+1.2% this week</p>
     </div>
-    <div class="stat-card">
-      <div class="stat-icon amber"><span class="icon-label">DV</span></div>
-      <div class="stat-body">
-        <p class="stat-label">Deviations</p>
-        <h3 class="stat-value">{{ loading ? '...' : deviations }}</h3>
-      </div>
+    <div class="kpi-card">
+      <p class="kpi-label">Open queries</p>
+      <p class="kpi-value">{{ loading ? '—' : openAEs }}</p>
+      <p class="kpi-note kpi-warn" *ngIf="!loading && overdueQueries > 0">{{ overdueQueries }} overdue</p>
     </div>
-    <div class="stat-card">
-      <div class="stat-icon blue"><span class="icon-label">DC</span></div>
-      <div class="stat-body">
-        <p class="stat-label">Draft Documents</p>
-        <h3 class="stat-value">{{ loading ? '...' : draftDocs }}</h3>
-      </div>
+    <div class="kpi-card">
+      <p class="kpi-label">Deviations</p>
+      <p class="kpi-value">{{ loading ? '—' : deviations }}</p>
+      <p class="kpi-note" *ngIf="!loading">Across {{ protocolsCount }} protocols</p>
     </div>
-    <div class="stat-card">
-      <div class="stat-icon purple"><span class="icon-label">KP</span></div>
-      <div class="stat-body">
-        <p class="stat-label">KPI Reports</p>
-        <h3 class="stat-value">{{ loading ? '...' : kpiReports }}</h3>
-      </div>
+    <div class="kpi-card">
+      <p class="kpi-label">Outliers flagged</p>
+      <p class="kpi-value" [class.kpi-warn]="draftDocs > 0">{{ loading ? '—' : draftDocs }}</p>
+      <p class="kpi-note">Needs review</p>
     </div>
   </div>
 
-  <!-- Row 1: Open AEs + Quick Actions -->
-  <div class="content-grid wide">
+  <!-- ── Main Body ──────────────────────────────────────────────────────────── -->
+  <div class="dash-body">
 
-    <!-- Open Adverse Events — needs attention -->
-    <div class="panel">
-      <div class="panel-header">
-        <h3 class="panel-title">Open Adverse Events</h3>
-        <span class="panel-badge">Needs Attention</span>
+    <!-- Left: Open AEs by protocol (live data) -->
+    <div class="dash-panel">
+      <div class="panel-hdr">
+        <span class="panel-title">Open AEs by protocol</span>
+        <span class="panel-note">Live data</span>
       </div>
-      <div *ngIf="loading" class="loading-state"><div class="spinner"></div></div>
-      <div *ngIf="!loading && openAEList.length === 0" class="empty-state">
-        <p>No open adverse events — data quality is clear.</p>
+
+      <div *ngIf="loading" class="loading-row">
+        <div class="spinner-sm"></div>
+        <span>Loading…</span>
       </div>
-      <div class="data-list" *ngIf="!loading && openAEList.length > 0">
-        <div class="data-item" *ngFor="let ae of openAEList">
-          <div class="data-item-dot ae-dot"></div>
-          <div class="data-item-body">
-            <p class="data-item-title">{{ ae.description ?? '—' }}</p>
-            <p class="data-item-sub">Patient #{{ ae.patientID }} &nbsp;·&nbsp; {{ ae.reportedDate | date:'MMM d, y' }}</p>
+      <div *ngIf="!loading && aesByProtocol.length === 0" class="empty-row">
+        No open AEs across protocols.
+      </div>
+
+      <div class="proto-bars" *ngIf="!loading && aesByProtocol.length > 0">
+        <div class="proto-bar-item" *ngFor="let p of aesByProtocol">
+          <div class="proto-bar-row">
+            <span class="proto-bar-name">{{ p.name }}</span>
+            <span class="proto-bar-count">{{ p.count }} AE{{ p.count !== 1 ? 's' : '' }}</span>
           </div>
-          <div class="badge-stack">
-            <span class="badge" [ngClass]="aeSeverityClass(ae.severity)">{{ ae.severity }}</span>
-            <span class="badge" [ngClass]="aeStatusClass(ae.status)">{{ ae.status }}</span>
+          <div class="proto-bar-track">
+            <div class="proto-bar-fill"
+                 [style.width.%]="(p.count / aesByProtocol[0].count) * 100"
+                 [ngClass]="'bar-' + p.band"></div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Quick Actions -->
-    <div class="panel">
-      <div class="panel-header">
-        <h3 class="panel-title">Quick Actions</h3>
+    <!-- Right: Data Quality Snapshot -->
+    <div class="dash-panel">
+      <div class="panel-hdr">
+        <span class="panel-title">Data quality snapshot</span>
+        <span class="panel-note">Live counters</span>
       </div>
-      <div class="action-grid">
-        <button class="action-btn" (click)="viewAdverseEvents()">
-          <span class="action-btn-label">Adverse Events</span>
-          <span class="action-btn-sub">Review &amp; update AEs</span>
-        </button>
-        <button class="action-btn" (click)="viewDeviations()">
-          <span class="action-btn-label">Deviations</span>
-          <span class="action-btn-sub">Protocol deviations</span>
-        </button>
-        <button class="action-btn" (click)="viewEnrollments()">
-          <span class="action-btn-label">Enrollments</span>
-          <span class="action-btn-sub">Trial enrollment data</span>
-        </button>
-        <button class="action-btn" (click)="viewReports()">
-          <span class="action-btn-label">KPI Reports</span>
-          <span class="action-btn-sub">Analytics &amp; metrics</span>
-        </button>
+      <div *ngIf="loading" class="loading-row"><div class="spinner-sm"></div></div>
+      <div class="vi-list" *ngIf="!loading">
+        <div class="vi-item" *ngFor="let v of validationIssues">
+          <div class="vi-row">
+            <p class="vi-name">{{ v.name }}</p>
+            <span class="vi-count" [ngClass]="'vi-count-' + v.band">{{ v.count }}</span>
+          </div>
+          <p class="vi-detail">{{ v.detail }}</p>
+        </div>
       </div>
     </div>
 
   </div>
 
-  <!-- Row 2: Protocol Deviations (full width) -->
-  <div class="panel panel-full-row">
-    <div class="panel-header">
-      <h3 class="panel-title">Protocol Deviations</h3>
-      <span class="panel-badge">Latest 6</span>
-    </div>
-    <div *ngIf="loading" class="loading-state"><div class="spinner"></div></div>
-    <div *ngIf="!loading && recentDeviations.length === 0" class="empty-state">
-      <p>No deviations recorded.</p>
-    </div>
-    <div class="data-list" *ngIf="!loading && recentDeviations.length > 0">
-      <div class="data-item" *ngFor="let dv of recentDeviations">
-        <div class="data-item-dot dv-dot"></div>
-        <div class="data-item-body">
-          <p class="data-item-title">{{ dv.description ?? '—' }}</p>
-          <p class="data-item-sub">Site Protocol #{{ dv.siteProtocolID }} &nbsp;·&nbsp; {{ dv.reportedDate | date:'MMM d, y' }}</p>
-        </div>
-        <div class="badge-stack">
-          <span class="badge" [ngClass]="devSeverityClass(dv.severity)">{{ dv.severity }}</span>
-          <span class="badge" [ngClass]="devStatusClass(dv.status)">{{ dv.status }}</span>
-        </div>
+  <!-- ── Open Queries Table ─────────────────────────────────────────────────── -->
+  <div class="dash-panel" style="margin-top:16px">
+    <div class="panel-hdr">
+      <span class="panel-title">Open queries to investigators</span>
+      <div style="display:flex;gap:8px">
+        <select class="filter-select" [(ngModel)]="queryFilter" name="queryFilter">
+          <option value="all">All statuses</option>
+          <option value="awaiting">Awaiting response</option>
+          <option value="overdue">Overdue</option>
+        </select>
+        <button class="hdr-btn-sm" (click)="viewAdverseEvents()">View all</button>
       </div>
     </div>
+
+    <div *ngIf="loading" class="loading-row">
+      <div class="spinner-sm"></div>
+      <span>Loading queries…</span>
+    </div>
+    <div *ngIf="!loading && openQueries.length === 0" class="empty-row">
+      No open queries — data is clean.
+    </div>
+
+    <table class="dm-table" *ngIf="!loading && openQueries.length > 0">
+      <thead>
+        <tr>
+          <th style="width:22%">Reference</th>
+          <th style="width:12%">Type</th>
+          <th style="width:32%">Query</th>
+          <th style="width:16%">Sent to</th>
+          <th style="width:18%">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let q of openQueries">
+          <td>{{ q.ref }}</td>
+          <td><span class="status-pill" [ngClass]="q.kind === 'AE' ? 'badge-amber' : 'badge-blue'">{{ q.kind }}</span></td>
+          <td>{{ q.query }}</td>
+          <td class="muted-cell">{{ q.sentTo }}</td>
+          <td><span class="status-pill" [ngClass]="queryStatusClass(q.status)">{{ q.status }}</span></td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 
 </main>

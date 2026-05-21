@@ -15,6 +15,8 @@ import { environment } from '../../../../../environments/environment';
 export class PatientDashboardComponent implements OnInit {
   user: UserInfo | null;
 
+  today = new Date();
+
   // ── Patient record (resolved from UserID) ─────────────────────────────────
   patientRecord: any = null;
   noPatientRecord   = false;
@@ -113,6 +115,37 @@ export class PatientDashboardComponent implements OnInit {
 
   // ── Getters ───────────────────────────────────────────────────────────────
   get firstName() { return this.user?.name?.split(' ')[0] ?? this.user?.name; }
+
+  /** Two-letter initials for the avatar circle. */
+  get initials(): string {
+    const name = this.user?.name ?? '';
+    const parts = name.trim().split(/\s+/);
+    if (parts.length === 0 || !parts[0]) return '?';
+    const a = parts[0].charAt(0);
+    const b = parts.length > 1 ? parts[parts.length - 1].charAt(0) : '';
+    return (a + b).toUpperCase();
+  }
+
+  /** Active enrollment's protocol title, or a fallback. */
+  get activeStudyName(): string {
+    const active = this.enrollments.find((e: any) => e.status === 'Active') ?? this.enrollments[0];
+    if (!active) return 'Clinical trial participant';
+    return this.protocolName(active.siteProtocolID);
+  }
+
+  /** The soonest upcoming scheduled visit. */
+  get nextVisit(): any {
+    return this.upcomingVisits[0] ?? null;
+  }
+
+  /** Two-letter avatar for a message sender, derived from category text. */
+  messageAvatar(n: any): string {
+    const src = n?.category ?? n?.from ?? 'SY';
+    const parts = String(src).trim().split(/\s+/);
+    const a = parts[0]?.charAt(0) ?? '?';
+    const b = parts[1]?.charAt(0) ?? '';
+    return (a + b).toUpperCase();
+  }
 
   get formattedDOB(): string {
     if (!this.patientRecord?.dob) return '—';

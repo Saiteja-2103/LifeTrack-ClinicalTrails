@@ -14,6 +14,8 @@ import { DashboardService } from '../../../../core/services/dashboard.service';
 export class CtmDashboardComponent implements OnInit {
   user: UserInfo | null;
 
+  today = new Date();
+
   protocols = 0; activeEnrollments = 0; openAEs = 0; pendingDocs = 0;
   recentProtocols: any[] = [];
   loading = true;
@@ -57,5 +59,14 @@ export class CtmDashboardComponent implements OnInit {
       Paused: 'badge-amber', Draft: 'badge-slate', Terminated: 'badge-red'
     };
     return m[s] ?? 'badge-slate';
+  }
+
+  /** Returns a CSS width string for the protocol progress bar based on status. */
+  protocolBarWidth(status: string): string {
+    const m: Record<string, string> = {
+      Active: '75%', Completed: '100%',
+      Paused: '50%', Draft: '20%', Terminated: '30%'
+    };
+    return m[status] ?? '40%';
   }
 }
