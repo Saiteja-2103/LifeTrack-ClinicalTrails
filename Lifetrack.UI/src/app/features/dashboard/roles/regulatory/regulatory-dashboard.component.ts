@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { forkJoin } from 'rxjs';
+import { forkJoin, Subject, takeUntil } from 'rxjs';
 import { AuthService } from '../../../../core/services/auth.service';
 import { UserInfo } from '../../../../core/models/auth.models';
 import { DashboardService } from '../../../../core/services/dashboard.service';
@@ -11,7 +11,8 @@ import { DashboardService } from '../../../../core/services/dashboard.service';
   templateUrl: './regulatory-dashboard.component.html',
   styleUrls: ['./regulatory-dashboard.component.css']
 })
-export class RegulatoryDashboardComponent implements OnInit {
+export class RegulatoryDashboardComponent implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
   user: UserInfo | null;
 
   today = new Date();
@@ -50,7 +51,7 @@ export class RegulatoryDashboardComponent implements OnInit {
       kpiReports:       this.ds.count('kpi-reports'),
       recentDocs:       this.ds.list<any>('documents'),
       recentDeviations: this.ds.list<any>('deviations'),
-    }).subscribe(d => {
+    }).pipe(takeUntil(this.destroy$)).subscribe(d => {
       this.totalDocs        = d.totalDocs;
       this.approvedDocs     = d.approvedDocs;
       this.severeAEs        = d.severeAEs;
@@ -89,5 +90,10 @@ export class RegulatoryDashboardComponent implements OnInit {
       Open: 'badge-red', 'Under Review': 'badge-amber', Resolved: 'badge-green'
     };
     return m[s] ?? 'badge-slate';
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

@@ -1,9 +1,11 @@
 using System.Text.Json.Serialization;
+using System.Threading.RateLimiting;
 using Authentication.API.Data;
 using Authentication.API.Repositories;
 using Authentication.API.Repositories.Interfaces;
 using Authentication.API.Services;
 using Authentication.API.Services.Interfaces;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Shared.CL.Extensions;
@@ -52,6 +54,8 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 // ── CORS ───────────────────────────────────────────────────────────────────
+// Explicit allow-list of headers + methods rather than AllowAnyHeader/Method,
+// which combined with credentialed origins would broaden the attack surface.
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AngularDevClient", policy =>
@@ -60,8 +64,21 @@ builder.Services.AddCors(options =>
                 "http://127.0.0.1:4200",
                 "http://localhost:62536",
                 "http://127.0.0.1:62536")
-              .AllowAnyHeader()
-              .AllowAnyMethod());
+              .WithHeaders("Authorization", "Content-Type", "Accept", "X-Requested-With")
+              .WithMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+});
+
+// ── Rate limiting — protects the login endpoint from brute-force attacks. ──
+builder.Services.AddRateLimiter(o =>
+{
+    o.AddFixedWindowLimiter(policyName: "LoginPolicy", opts =>
+    {
+        opts.PermitLimit  = 5;                            // 5 attempts...
+        opts.Window       = TimeSpan.FromMinutes(5);      // ...per 5 minutes
+        opts.QueueLimit   = 0;
+        opts.AutoReplenishment = true;
+    });
+    o.RejectionStatusCode = 429;
 });
 
 // ── Caching ────────────────────────────────────────────────────────────────
@@ -99,6 +116,7 @@ var app = builder.Build();
 app.UseGlobalExceptionHandler(); // must be first — catches everything below
 
 app.UseCors("AngularDevClient");
+app.UseRateLimiter();
 
 if (app.Environment.IsDevelopment())
 {

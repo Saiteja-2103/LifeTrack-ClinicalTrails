@@ -36,7 +36,8 @@ public class JwtAuthFilter : IAsyncAuthorizationFilter
         string? authHeader = context.HttpContext.Request.Headers["Authorization"]
             .FirstOrDefault();
 
-        if (string.IsNullOrEmpty(authHeader) || !authHeader.StartsWith("Bearer "))
+        if (string.IsNullOrEmpty(authHeader)
+            || !authHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
         {
             context.Result = new ObjectResult(
                 ApiResponse<object>.Fail("Unauthorized. Missing or invalid token."))
@@ -44,21 +45,38 @@ public class JwtAuthFilter : IAsyncAuthorizationFilter
             return;
         }
 
-        string token = authHeader["Bearer ".Length..].Trim();
+        // Robust Bearer extraction — won't throw on edge cases like "Bearer" alone.
+        string token = authHeader.Substring("Bearer ".Length).Trim();
+        if (string.IsNullOrWhiteSpace(token))
+        {
+            context.Result = new ObjectResult(
+                ApiResponse<object>.Fail("Unauthorized. Empty bearer token."))
+            { StatusCode = 401 };
+            return;
+        }
 
         try
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            string secretKey = _config["Jwt:Secret"]
+
+            // Prefer JWT_SECRET environment variable for production deployments,
+            // fall back to config (dev/local) so existing local runs still work.
+            string secretKey = Environment.GetEnvironmentVariable("JWT_SECRET")
+                ?? _config["Jwt:Secret"]
                 ?? throw new InvalidOperationException("Jwt:Secret is not configured.");
+
+            string? issuer   = _config["Jwt:Issuer"];
+            string? audience = _config["Jwt:Audience"];
 
             var validationParameters = new TokenValidationParameters
             {
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = new SymmetricSecurityKey(
                                                Encoding.UTF8.GetBytes(secretKey)),
-                ValidateIssuer = false,
-                ValidateAudience = false,
+                ValidateIssuer   = !string.IsNullOrWhiteSpace(issuer),
+                ValidIssuer      = issuer,
+                ValidateAudience = !string.IsNullOrWhiteSpace(audience),
+                ValidAudience    = audience,
                 ValidateLifetime = true,
                 ClockSkew = TimeSpan.FromSeconds(30)
             };

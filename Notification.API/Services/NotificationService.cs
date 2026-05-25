@@ -73,10 +73,17 @@ public class NotificationService : INotificationService
         return ToResponse(created);
     }
 
-    public async Task<NotificationResponse?> MarkReadAsync(long id)
+    public async Task<NotificationResponse?> MarkReadAsync(long id, long callerUserId)
     {
         var n = await _repo.GetByIdAsync(id);
         if (n is null) return null;
+
+        // Ownership check — prevent IDOR. A user can only mark their own
+        // notifications as read.
+        if (n.UserID != callerUserId)
+            throw new UnauthorizedAccessException(
+                "You can only mark your own notifications as read.");
+
         if (n.Status != "Read")
         {
             n.Status = "Read";

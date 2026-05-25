@@ -53,12 +53,22 @@ public class NotificationsController : ControllerBase
         return CreatedAtAction(nameof(ListMine), null, created);
     }
 
-    /// <summary>Mark a single notification as read.</summary>
+    /// <summary>Mark a single notification as read. Caller must own the notification.</summary>
     [HttpPost("{id:long}/read")]
     public async Task<ActionResult<NotificationResponse>> MarkRead(long id)
     {
-        var result = await _svc.MarkReadAsync(id);
-        return result is null ? NotFound() : Ok(result);
+        var userId = GetCurrentUserId();
+        if (userId is null) return Unauthorized();
+
+        try
+        {
+            var result = await _svc.MarkReadAsync(id, userId.Value);
+            return result is null ? NotFound() : Ok(result);
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return Forbid();
+        }
     }
 
     private long? GetCurrentUserId()

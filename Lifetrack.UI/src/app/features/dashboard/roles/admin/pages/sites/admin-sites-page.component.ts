@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -11,7 +11,7 @@ import { environment } from '../../../../../../../environments/environment';
   templateUrl: './admin-sites-page.component.html',
   styleUrls: ['./admin-sites-page.component.css']
 })
-export class AdminSitesPageComponent implements OnInit {
+export class AdminSitesPageComponent implements OnInit, OnDestroy {
 
   // ── List state ─────────────────────────────────────────────────────────────
   siteList: any[]  = [];
@@ -228,5 +228,9 @@ export class AdminSitesPageComponent implements OnInit {
     if (ctrl.errors?.['required'])  return 'Required.';
     if (ctrl.errors?.['maxlength']) return `Max ${ctrl.errors['maxlength'].requiredLength} characters.`;
     return 'Invalid value.';
+  }
+
+  ngOnDestroy(): void {
+    clearTimeout(this.searchTimer);
   }
 }

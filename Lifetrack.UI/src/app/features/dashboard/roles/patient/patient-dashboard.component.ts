@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { forkJoin } from 'rxjs';
-import { catchError, of } from 'rxjs';
+import { forkJoin, Subject } from 'rxjs';
+import { catchError, of, takeUntil } from 'rxjs';
 import { AuthService } from '../../../../core/services/auth.service';
 import { UserInfo } from '../../../../core/models/auth.models';
 import { environment } from '../../../../../environments/environment';
@@ -12,8 +12,9 @@ import { environment } from '../../../../../environments/environment';
   templateUrl: './patient-dashboard.component.html',
   styleUrls: ['./patient-dashboard.component.css']
 })
-export class PatientDashboardComponent implements OnInit {
+export class PatientDashboardComponent implements OnInit, OnDestroy {
   user: UserInfo | null;
+  private destroy$ = new Subject<void>();
 
   today = new Date();
 
@@ -54,7 +55,7 @@ export class PatientDashboardComponent implements OnInit {
                        .pipe(catchError(() => of({ items: [] }))),
       notifications: this.http.get<any>(`${environment.apiUrl}/notifications/my?pageSize=6`)
                        .pipe(catchError(() => of({ items: [] }))),
-    }).subscribe(({ patients, notifications }) => {
+    }).pipe(takeUntil(this.destroy$)).subscribe(({ patients, notifications }) => {
 
       this.notifications    = notifications.items ?? [];
       this.statsNotifications = this.notifications.length;
@@ -87,7 +88,7 @@ export class PatientDashboardComponent implements OnInit {
                        .pipe(catchError(() => of({ items: [] }))),
       allVisits:     this.http.get<any>(`${environment.apiUrl}/visits?pageSize=200`)
                        .pipe(catchError(() => of({ items: [] }))),
-    }).subscribe(({ enrollments, adverseEvents, protocols, siteProtocols, sites, allVisits }) => {
+    }).pipe(takeUntil(this.destroy$)).subscribe(({ enrollments, adverseEvents, protocols, siteProtocols, sites, allVisits }) => {
 
       // Build lookup maps
       (protocols.items ?? []).forEach((p: any) => this.protocolMap[p.protocolID] = p.title);
@@ -201,5 +202,10 @@ export class PatientDashboardComponent implements OnInit {
       Resolved: 'badge-green', Closed: 'badge-slate'
     };
     return m[s] ?? 'badge-slate';
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

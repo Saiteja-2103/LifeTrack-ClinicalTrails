@@ -40,3 +40,6 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+# Claude AI settings (local only, should never be committed)
+.claude/

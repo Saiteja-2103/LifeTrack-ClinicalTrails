@@ -5,6 +5,7 @@ using Authentication.API.DTOs;
 using Authentication.API.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Shared.CL.Enums;
 using Shared.CL.Filters;
 
@@ -32,8 +33,11 @@ public class AuthController : ControllerBase
     }
 
     // ── Login ─────────────────────────────────────────────────────────────────
+    // Brute-force protection: 5 attempts / 5 min per source via "LoginPolicy"
+    // (configured in Program.cs). Excess attempts get HTTP 429.
     [HttpPost("login")]
     [AllowAnonymous]
+    [EnableRateLimiting("LoginPolicy")]
     public async Task<ActionResult<AuthResponse>> Login([FromBody] LoginRequest req)
     {
         try { return Ok(await _auth.LoginAsync(req)); }

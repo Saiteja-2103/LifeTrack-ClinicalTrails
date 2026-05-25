@@ -11,7 +11,7 @@ public class AuthDbContext : DbContext
     public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
     public DbSet<AuditEntry> AuditEntries => Set<AuditEntry>();
 
-    /// <summary>Set this before SaveChangesAsync to stamp the current user on audit rows.</summary>
+    // <summary>Set this before SaveChangesAsync to stamp the current user on audit rows.</summary>
     public long? CurrentUserID { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

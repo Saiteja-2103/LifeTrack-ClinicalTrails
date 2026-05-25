@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -12,7 +12,7 @@ import { environment } from '../../../../../../../environments/environment';
   templateUrl: './admin-users-page.component.html',
   styleUrls: ['./admin-users-page.component.css']
 })
-export class AdminUsersPageComponent implements OnInit {
+export class AdminUsersPageComponent implements OnInit, OnDestroy {
 
   // ── List state ─────────────────────────────────────────────────────────────
   userList: any[]  = [];
@@ -298,5 +298,11 @@ export class AdminUsersPageComponent implements OnInit {
     if (ctrl.errors?.['minlength']) return `Min ${ctrl.errors['minlength'].requiredLength} characters.`;
     if (ctrl.errors?.['maxlength']) return `Max ${ctrl.errors['maxlength'].requiredLength} characters.`;
     return 'Invalid value.';
+  }
+
+  ngOnDestroy(): void {
+    // Cancel pending search debounce + success-flash timers so they can't fire
+    // on a destroyed component.
+    clearTimeout(this.searchTimer);
   }
 }

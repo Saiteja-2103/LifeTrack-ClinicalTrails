@@ -9,5 +9,10 @@ public interface INotificationService
     Task<PagedResult<NotificationResponse>> ListAllAsync(
         string? category, string? status, int page, int pageSize);
     Task<NotificationResponse> CreateAsync(CreateNotificationRequest req);
-    Task<NotificationResponse?> MarkReadAsync(long id);
+
+    /// <summary>
+    /// Mark a notification as read. Returns null if not found, throws
+    /// UnauthorizedAccessException if the notification does not belong to the caller.
+    /// </summary>
+    Task<NotificationResponse?> MarkReadAsync(long id, long callerUserId);
 }

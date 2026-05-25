@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -22,7 +22,7 @@ function dateRangeValidator(group: AbstractControl): ValidationErrors | null {
   templateUrl: './admin-protocols-page.component.html',
   styleUrls: ['./admin-protocols-page.component.css']
 })
-export class AdminProtocolsPageComponent implements OnInit {
+export class AdminProtocolsPageComponent implements OnInit, OnDestroy {
 
   // ── List state ─────────────────────────────────────────────────────────────
   protocolList: any[] = [];
@@ -354,5 +354,9 @@ export class AdminProtocolsPageComponent implements OnInit {
     const touched = form.get('startDate')?.touched || form.get('endDate')?.touched;
     if (!touched) return '';
     return form.errors?.['dateRange'] ?? '';
+  }
+
+  ngOnDestroy(): void {
+    clearTimeout(this.searchTimer);
   }
 }

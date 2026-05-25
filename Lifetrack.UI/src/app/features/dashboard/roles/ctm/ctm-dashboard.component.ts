@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { forkJoin } from 'rxjs';
+import { forkJoin, Subject, takeUntil } from 'rxjs';
 import { AuthService } from '../../../../core/services/auth.service';
 import { UserInfo } from '../../../../core/models/auth.models';
 import { DashboardService } from '../../../../core/services/dashboard.service';
@@ -11,8 +11,9 @@ import { DashboardService } from '../../../../core/services/dashboard.service';
   templateUrl: './ctm-dashboard.component.html',
   styleUrls: ['./ctm-dashboard.component.css']
 })
-export class CtmDashboardComponent implements OnInit {
+export class CtmDashboardComponent implements OnInit, OnDestroy {
   user: UserInfo | null;
+  private destroy$ = new Subject<void>();
 
   today = new Date();
 
@@ -35,7 +36,7 @@ export class CtmDashboardComponent implements OnInit {
       openAEs:           this.ds.count('adverse-events', { status: 'Open' }),
       pendingDocs:       this.ds.count('documents', { status: 'Under Review' }),
       recentProtocols:   this.ds.list<any>('protocols'),
-    }).subscribe(d => {
+    }).pipe(takeUntil(this.destroy$)).subscribe(d => {
       this.protocols         = d.protocols;
       this.activeEnrollments = d.activeEnrollments;
       this.openAEs           = d.openAEs;
@@ -68,5 +69,10 @@ export class CtmDashboardComponent implements OnInit {
       Paused: '50%', Draft: '20%', Terminated: '30%'
     };
     return m[status] ?? '40%';
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

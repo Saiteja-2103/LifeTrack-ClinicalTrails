@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { forkJoin } from 'rxjs';
-import { catchError, of } from 'rxjs';
+import { forkJoin, Subject } from 'rxjs';
+import { catchError, of, takeUntil } from 'rxjs';
 import { AuthService } from '../../../../core/services/auth.service';
 import { UserInfo } from '../../../../core/models/auth.models';
 import { DashboardService } from '../../../../core/services/dashboard.service';
@@ -14,8 +14,10 @@ import { environment } from '../../../../../environments/environment';
   templateUrl: './investigator-dashboard.component.html',
   styleUrls: ['./investigator-dashboard.component.css']
 })
-export class InvestigatorDashboardComponent implements OnInit {
+export class InvestigatorDashboardComponent implements OnInit, OnDestroy {
   user: UserInfo | null;
+  /** Signal that completes all subscriptions on component destroy. */
+  private destroy$ = new Subject<void>();
 
   today = new Date();
 
@@ -50,7 +52,7 @@ export class InvestigatorDashboardComponent implements OnInit {
       adverseEvents: this.ds.count('adverse-events'),
       visits:        this.ds.count('visits'),
       recentAEs:     this.ds.list<any>('adverse-events'),
-    }).subscribe(d => {
+    }).pipe(takeUntil(this.destroy$)).subscribe(d => {
       this.sites = d.sites; this.patients = d.patients;
       this.adverseEvents = d.adverseEvents; this.visits = d.visits;
       this.recentAEs = d.recentAEs;
@@ -68,7 +70,7 @@ export class InvestigatorDashboardComponent implements OnInit {
           .pipe(catchError(() => of({ items: [] }))),
         sites:       this.http.get<any>(`${environment.apiUrl}/sites?pageSize=200`)
           .pipe(catchError(() => of({ items: [] }))),
-      }).subscribe(({ assignments, protocols, sites }) => {
+      }).pipe(takeUntil(this.destroy$)).subscribe(({ assignments, protocols, sites }) => {
         this.myAssignments = assignments.items ?? [];
         const pm: Record<number, string> = {};
         (protocols.items ?? []).forEach((p: any) => pm[p.protocolID] = p.title);
@@ -117,4 +119,8 @@ export class InvestigatorDashboardComponent implements OnInit {
     return m[s] ?? 'badge-slate';
   }
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 }

@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { forkJoin } from 'rxjs';
+import { forkJoin, Subject, takeUntil } from 'rxjs';
 import { AuthService } from '../../../../core/services/auth.service';
 import { UserInfo } from '../../../../core/models/auth.models';
 import { DashboardService } from '../../../../core/services/dashboard.service';
@@ -11,8 +11,9 @@ import { DashboardService } from '../../../../core/services/dashboard.service';
   templateUrl: './data-manager-dashboard.component.html',
   styleUrls: ['./data-manager-dashboard.component.css']
 })
-export class DataManagerDashboardComponent implements OnInit {
+export class DataManagerDashboardComponent implements OnInit, OnDestroy {
   user: UserInfo | null;
+  private destroy$ = new Subject<void>();
 
   today = new Date();
 
@@ -75,7 +76,7 @@ export class DataManagerDashboardComponent implements OnInit {
       protocols:  this.ds.count('protocols'),
       openAEList: this.ds.list<any>('adverse-events', { status: 'Open' }),
       recentDeviations: this.ds.list<any>('deviations'),
-    }).subscribe(d => {
+    }).pipe(takeUntil(this.destroy$)).subscribe(d => {
       this.openAEs    = d.openAEs;
       this.deviations = d.deviations;
       this.draftDocs  = d.draftDocs;
@@ -188,5 +189,10 @@ export class DataManagerDashboardComponent implements OnInit {
     if (days <= 0) return 'today';
     if (days === 1) return '1 day';
     return `${days} days`;
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

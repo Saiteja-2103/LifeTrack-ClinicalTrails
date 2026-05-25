@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { forkJoin } from 'rxjs';
+import { forkJoin, Subject, takeUntil } from 'rxjs';
 import { AuthService } from '../../../../core/services/auth.service';
 import { UserInfo } from '../../../../core/models/auth.models';
 import { DashboardService } from '../../../../core/services/dashboard.service';
@@ -11,7 +11,8 @@ import { DashboardService } from '../../../../core/services/dashboard.service';
   templateUrl: './admin-dashboard.component.html',
   styleUrls: ['./admin-dashboard.component.css']
 })
-export class AdminDashboardComponent implements OnInit {
+export class AdminDashboardComponent implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
   user: UserInfo | null;
 
   today = new Date();
@@ -47,7 +48,7 @@ export class AdminDashboardComponent implements OnInit {
       recentAEs:       this.ds.list<any>('adverse-events'),
       recentUsers:     this.ds.list<any>('users'),
       recentProtocols: this.ds.list<any>('protocols'),
-    }).subscribe(d => {
+    }).pipe(takeUntil(this.destroy$)).subscribe(d => {
       this.users           = d.users;
       this.protocols       = d.protocols;
       this.patients        = d.patients;
@@ -153,5 +154,10 @@ export class AdminDashboardComponent implements OnInit {
       Paused: 'badge-amber', Draft: 'badge-slate', Terminated: 'badge-red'
     };
     return m[s] ?? 'badge-slate';
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }
