@@ -8,7 +8,7 @@ namespace Authentication.API.Controllers;
 
 [ApiController]
 [Route("api/users")]
-public class UsersController : ControllerBase
+public class UsersController : ControllerBase 
 {
     private readonly IUserService _users;
     public UsersController(IUserService users) => _users = users;
