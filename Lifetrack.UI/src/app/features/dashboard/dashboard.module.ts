@@ -10,27 +10,27 @@ import { RoleHomeComponent }               from './roles/home/role-home.componen
 
 // ── Admin ─────────────────────────────────────────────────────────────────────
 import { AdminDashboardComponent }         from './roles/admin/admin-dashboard.component';
-import { AdminUsersPageComponent }         from './roles/admin/pages/admin-users-page.component';
-import { AdminProtocolsPageComponent }     from './roles/admin/pages/admin-protocols-page.component';
-import { AdminSitesPageComponent }         from './roles/admin/pages/admin-sites-page.component';
-import { AdminAssignmentsPageComponent }   from './roles/admin/pages/admin-assignments-page.component';
+import { AdminUsersPageComponent }         from './roles/admin/pages/users/admin-users-page.component';
+import { AdminProtocolsPageComponent }     from './roles/admin/pages/protocols/admin-protocols-page.component';
+import { AdminSitesPageComponent }         from './roles/admin/pages/sites/admin-sites-page.component';
+import { AdminAssignmentsPageComponent }   from './roles/admin/pages/assignments/admin-assignments-page.component';
 import { AdminDocumentsPageComponent }     from './roles/admin/pages/admin-documents-page/admin-documents-page.component';
 import { AdminReportsPageComponent }       from './roles/admin/pages/admin-reports-page/admin-reports-page.component';
 import { AdminAuditLogsPageComponent }     from './roles/admin/pages/admin-audit-logs-page/admin-audit-logs-page.component';
 
 // ── CTM ───────────────────────────────────────────────────────────────────────
 import { CtmDashboardComponent }           from './roles/ctm/ctm-dashboard.component';
-import { CtmProtocolsPageComponent }       from './roles/ctm/pages/ctm-protocols-page.component';
-import { CtmSitesPageComponent }           from './roles/ctm/pages/ctm-sites-page.component';
-import { CtmAssignmentsPageComponent }     from './roles/ctm/pages/ctm-assignments-page.component';
+import { CtmProtocolsPageComponent }       from './roles/ctm/pages/protocols/ctm-protocols-page.component';
+import { CtmSitesPageComponent }           from './roles/ctm/pages/sites/ctm-sites-page.component';
+import { CtmAssignmentsPageComponent }     from './roles/ctm/pages/assignments/ctm-assignments-page.component';
 import { CtmAdverseEventsPageComponent }   from './roles/ctm/pages/ctm-adverse-events-page/ctm-adverse-events-page.component';
 import { CtmDocumentsPageComponent }       from './roles/ctm/pages/ctm-documents-page/ctm-documents-page.component';
 import { CtmReportsPageComponent }         from './roles/ctm/pages/ctm-reports-page/ctm-reports-page.component';
 
 // ── Investigator ──────────────────────────────────────────────────────────────
 import { InvestigatorDashboardComponent }           from './roles/investigator/investigator-dashboard.component';
-import { InvestigatorEnrollmentsPageComponent }     from './roles/investigator/pages/investigator-enrollments-page.component';
-import { InvestigatorVisitsPageComponent }          from './roles/investigator/pages/investigator-visits-page.component';
+import { InvestigatorEnrollmentsPageComponent }     from './roles/investigator/pages/enrollments/investigator-enrollments-page.component';
+import { InvestigatorVisitsPageComponent }          from './roles/investigator/pages/visits/investigator-visits-page.component';
 import { InvestigatorAdverseEventsPageComponent }   from './roles/investigator/pages/investigator-adverse-events-page/investigator-adverse-events-page.component';
 import { InvestigatorDeviationsPageComponent }      from './roles/investigator/pages/investigator-deviations-page/investigator-deviations-page.component';
 

@@ -1,4 +1,5 @@
 using DocumentCompliance.API.DTOs;
+using Shared.CL.DTOs;
 
 namespace DocumentCompliance.API.Services.Interfaces;
 

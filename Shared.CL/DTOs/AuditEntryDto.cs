@@ -1,4 +1,4 @@
-namespace ProtocolSite.API.DTOs;
+namespace Shared.CL.DTOs;
 
 public class AuditEntryDto
 {

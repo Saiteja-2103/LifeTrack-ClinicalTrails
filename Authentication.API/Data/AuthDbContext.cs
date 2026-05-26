@@ -1,5 +1,6 @@
 using Authentication.API.Models;
 using Microsoft.EntityFrameworkCore;
+using Shared.CL.Models;
 namespace Authentication.API.Data;
 
 public class AuthDbContext : DbContext

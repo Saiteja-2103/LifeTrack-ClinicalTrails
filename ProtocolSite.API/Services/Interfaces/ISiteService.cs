@@ -1,4 +1,5 @@
 using ProtocolSite.API.DTOs;
+using Shared.CL.DTOs;
 namespace ProtocolSite.API.Services.Interfaces;
 
 public interface ISiteService

@@ -1,5 +1,6 @@
 using AdverseEvent.API.Models;
 using Microsoft.EntityFrameworkCore;
+using Shared.CL.Models;
 namespace AdverseEvent.API.Data;
 
 public class AdverseEventDbContext : DbContext

@@ -1,4 +1,5 @@
 using Patient.API.DTOs;
+using Shared.CL.DTOs;
 namespace Patient.API.Services.Interfaces;
 
 public interface IEnrollmentService

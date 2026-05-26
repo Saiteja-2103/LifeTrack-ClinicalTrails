@@ -1,5 +1,6 @@
 using AdverseEvent.API.DTOs;
 using AdverseEvent.API.Models;
+using Shared.CL.DTOs;
 using AdverseEvent.API.Repositories.Interfaces;
 using AdverseEvent.API.Services.Interfaces;
 using Microsoft.Extensions.Caching.Memory;

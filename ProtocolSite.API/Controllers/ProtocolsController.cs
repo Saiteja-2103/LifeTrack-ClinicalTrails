@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using ProtocolSite.API.DTOs;
 using ProtocolSite.API.Services.Interfaces;
+using Shared.CL.DTOs;
 using Shared.CL.Enums;
 using Shared.CL.Exceptions;
 using Shared.CL.Filters;

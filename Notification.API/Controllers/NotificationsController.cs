@@ -2,6 +2,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Notification.API.DTOs;
 using Notification.API.Services.Interfaces;
+using Shared.CL.DTOs;
 using Shared.CL.Enums;
 using Shared.CL.Filters;
 

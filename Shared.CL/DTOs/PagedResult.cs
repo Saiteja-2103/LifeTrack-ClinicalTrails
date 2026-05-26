@@ -1,4 +1,4 @@
-namespace AdverseEvent.API.DTOs;
+namespace Shared.CL.DTOs;
 
 public class PagedResult<T>
 {

@@ -1,5 +1,6 @@
 using AnalyticsReport.API.Models;
 using Microsoft.EntityFrameworkCore;
+using Shared.CL.Models;
 namespace AnalyticsReport.API.Data;
 
 public class AnalyticsDbContext : DbContext

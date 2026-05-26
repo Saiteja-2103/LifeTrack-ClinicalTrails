@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Caching.Memory;
 using ProtocolSite.API.DTOs;
 using ProtocolSite.API.Models;
+using Shared.CL.DTOs;
 using ProtocolSite.API.Repositories.Interfaces;
 using ProtocolSite.API.Services.Interfaces;
 using Shared.CL.Exceptions;

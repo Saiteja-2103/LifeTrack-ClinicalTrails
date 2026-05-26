@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Patient.API.Models;
+using Shared.CL.Models;
 namespace Patient.API.Data;
 
 public class PatientDbContext : DbContext

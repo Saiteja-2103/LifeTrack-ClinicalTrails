@@ -1,4 +1,5 @@
 using Notification.API.DTOs;
+using Shared.CL.DTOs;
 
 namespace Notification.API.Services.Interfaces;
 

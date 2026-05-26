@@ -1,5 +1,6 @@
 using DocumentCompliance.API.Models;
 using Microsoft.EntityFrameworkCore;
+using Shared.CL.Models;
 namespace DocumentCompliance.API.Data;
 
 public class DocumentDbContext : DbContext

@@ -1,7 +1,9 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-namespace Patient.API.Models;
-/// <summary>Lightweight local audit trail written by PatientDbContext.SaveChangesAsync.</summary>
+
+namespace Shared.CL.Models;
+
+/// <summary>Lightweight shared audit trail written by each service's DbContext.SaveChangesAsync.</summary>
 [Table("AuditEntries")]
 public class AuditEntry
 {

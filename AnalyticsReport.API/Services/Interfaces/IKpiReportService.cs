@@ -1,4 +1,5 @@
 using AnalyticsReport.API.DTOs;
+using Shared.CL.DTOs;
 
 namespace AnalyticsReport.API.Services.Interfaces;
 

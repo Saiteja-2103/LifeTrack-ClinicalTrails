@@ -1,6 +1,6 @@
 using Authentication.API.Data;
-using Authentication.API.DTOs;
 using Microsoft.AspNetCore.Mvc;
+using Shared.CL.DTOs;
 using Microsoft.EntityFrameworkCore;
 using Shared.CL.Enums;
 using Shared.CL.Filters;

@@ -1,5 +1,6 @@
 using DocumentCompliance.API.DTOs;
 using DocumentCompliance.API.Models;
+using Shared.CL.DTOs;
 using DocumentCompliance.API.Repositories.Interfaces;
 using DocumentCompliance.API.Services.Interfaces;
 using Microsoft.Extensions.Caching.Memory;

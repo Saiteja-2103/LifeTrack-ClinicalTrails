@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Caching.Memory;
 using Patient.API.DTOs;
 using Patient.API.Models;
+using Shared.CL.DTOs;
 using Patient.API.Repositories.Interfaces;
 using Patient.API.Services.Interfaces;
 namespace Patient.API.Services;

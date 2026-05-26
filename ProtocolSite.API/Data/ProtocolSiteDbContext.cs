@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using ProtocolSite.API.Models;
+using Shared.CL.Models;
 namespace ProtocolSite.API.Data;
 
 public class ProtocolSiteDbContext : DbContext

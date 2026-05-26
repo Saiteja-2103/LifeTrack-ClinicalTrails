@@ -2,6 +2,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Patient.API.DTOs;
 using Patient.API.Services.Interfaces;
+using Shared.CL.DTOs;
 using Shared.CL.Enums;
 using Shared.CL.Exceptions;
 using Shared.CL.Filters;

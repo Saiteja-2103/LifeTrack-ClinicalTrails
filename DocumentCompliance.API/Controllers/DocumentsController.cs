@@ -1,5 +1,6 @@
 using DocumentCompliance.API.DTOs;
 using DocumentCompliance.API.Services.Interfaces;
+using Shared.CL.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Shared.CL.Enums;
 using Shared.CL.Exceptions;

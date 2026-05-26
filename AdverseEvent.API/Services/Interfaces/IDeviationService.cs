@@ -1,4 +1,5 @@
 using AdverseEvent.API.DTOs;
+using Shared.CL.DTOs;
 
 namespace AdverseEvent.API.Services.Interfaces;
 

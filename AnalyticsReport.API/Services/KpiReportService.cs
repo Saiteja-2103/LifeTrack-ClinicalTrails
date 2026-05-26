@@ -1,5 +1,6 @@
 using AnalyticsReport.API.DTOs;
 using AnalyticsReport.API.Models;
+using Shared.CL.DTOs;
 using AnalyticsReport.API.Repositories.Interfaces;
 using AnalyticsReport.API.Services.Interfaces;
 using Microsoft.Extensions.Caching.Memory;

@@ -1,5 +1,6 @@
 using AnalyticsReport.API.DTOs;
 using AnalyticsReport.API.Services.Interfaces;
+using Shared.CL.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Shared.CL.Enums;
 using Shared.CL.Exceptions;

@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Notification.API.Models;
+using Shared.CL.Models;
 namespace Notification.API.Data;
 
 public class NotificationDbContext : DbContext

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProtocolSite.API.Data;
 using ProtocolSite.API.DTOs;
+using Shared.CL.DTOs;
 using Shared.CL.Enums;
 using Shared.CL.Filters;
 

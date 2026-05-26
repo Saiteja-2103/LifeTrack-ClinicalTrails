@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Caching.Memory;
 using Notification.API.DTOs;
 using Notification.API.Models;
+using Shared.CL.DTOs;
 using Notification.API.Repositories.Interfaces;
 using Notification.API.Services.Interfaces;
 
